@@ -97,5 +97,14 @@ class WaitingForGodart {
 }
 
 void main() {
+  hideAll();
+  LOGIN_SCREEN_ELEMENT.style
+  ..display = 'inherit';
+  
+  query("#loginInfoForm").style
+  ..display = 'none';
+  
+  query("#loginConnectingMessage").style
+  ..visibility = 'inherit';
   var godart = new WaitingForGodart();
 }
