@@ -7,7 +7,8 @@ class Player {
   int id;
   String name;
 
-  Player(this.id, this.name, this.position, this.velocity, this.image);
+  Player(this.id, this.name, this.position, this.velocity, this.image){
+  }
   Player.origin(this.id, this.name){
     position = new Position.origin();
     velocity = new Vector.zero();

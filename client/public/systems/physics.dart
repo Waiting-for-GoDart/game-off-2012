@@ -2,7 +2,7 @@ part of system;
 
 class Physics extends System{
     static const GROUND = 600;
-    
+    static const RIGHT = 1500;
     void tick(){
       this.entities.forEach((var p){
         if(p is Player){
@@ -15,7 +15,7 @@ class Physics extends System{
             else{
               p.velocity.y = 0.0;
             }
-            if(p.position.x + deltaX < 1500 && p.position.x +deltaX > 0){
+            if(p.position.x + deltaX < RIGHT && p.position.x +deltaX > 0){
               p.position.x += deltaX;
             }
           }

@@ -14,14 +14,6 @@ class Game extends GameScreen {
   Control controlSystem;
   BackgroundRender bg;
 
-  
-  //Audio
-  Uint8Array freqArray;
-  AudioElement audioElement;
-  AudioSourceNode audioSource;
-  AudioContext audioContext;
-  AnalyserNode analyzer;
-
   Game(this.netsock, this.name, this.id, Map playerMap) {
 		var canvas = document.query("#game");
 		canv = canvas;
@@ -31,25 +23,11 @@ class Game extends GameScreen {
 		controlSystem = new Control(canvas);
 		renderSystem = new Render(ctx);
 		
-		//AUDIO
-		
-		audioElement = query("#jamz");
-		audioContext = new AudioContext();
-		audioSource = audioContext.createMediaElementSource( audioElement );
-		analyzer = audioContext.createAnalyser();
-		analyzer.smoothingTimeConstant = 0.8;
-		audioSource.connect( analyzer, 0, 0 );
-		analyzer.connect( audioContext.destination, 0, 0);
-		
-		
 	  bg = new BackgroundRender();
-	  rand = new Random();
 	  double size = PI * 10;
 	  for(int i = 0; i < size; i++){
 	    bg.generate((sin(i*PI/size)*255).toInt(), (sin(i*PI/size)*100).toInt(), (sin(i*PI/size)*155).toInt()+100);
 	  }
-	  int freqcount = size.toInt() + 1;
-	  freqArray = new Uint8Array( freqcount );
 		
   	players = new List<Player>();
   	for (int i = 0; i < playerMap.length; i++) {
@@ -63,7 +41,6 @@ class Game extends GameScreen {
   	controlSystem.addEntity(mainPlayer);
   	hideAll();
   	showGame();
-  	audioElement.play();
   	run();
   }
   
@@ -74,8 +51,9 @@ class Game extends GameScreen {
   
   void run() {
   		ctx.clearRect(0, 0, canv.width, canv.height);
-  		analyzer.getByteFrequencyData( freqArray );
-  	  bg.render(ctx, freqArray.getRange(0, freqArray.length ), audioElement.currentTime );
+  	  bg.render(ctx);
+  	  ctx.setFillColorRgb(0, 0, 0);
+  	  ctx.fillRect(0, Physics.GROUND, canv.width, canv.height);
 			controlSystem.update(netsock);
 			physicsSystem.tick();
 			renderSystem.render();
