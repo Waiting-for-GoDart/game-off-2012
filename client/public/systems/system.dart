@@ -3,6 +3,7 @@ library system;
 import 'dart:html';
 import '../utilities.dart';
 import '../game_logic.dart';
+import '../waiting_for_godart.dart';
 import 'dart:math';
 part 'control.dart';
 part 'render.dart';

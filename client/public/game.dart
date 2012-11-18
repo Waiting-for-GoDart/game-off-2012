@@ -2,7 +2,7 @@ part of waiting_for_godart;
 
 class Game extends GameScreen {
   static final int VELOCITY_DELTA = 3;
-
+  CanvasElement canv;
 	CanvasRenderingContext2D ctx;
   NetworkSocket netsock;
   String name;
@@ -12,16 +12,28 @@ class Game extends GameScreen {
   Render renderSystem;
   Physics physicsSystem;
   Control controlSystem;
+  BackgroundRender bg;
 
   Game(this.netsock, this.name, this.id, Map playerMap) {
 		var canvas = document.query("#game");
+		canv = canvas;
+		Drawable d = new Drawable("public/horse.png", (var i){});
 		ctx = (canvas as CanvasElement).getContext("2d");
  		physicsSystem = new Physics();
 		controlSystem = new Control(canvas);
 		renderSystem = new Render(ctx);
+		
+	  bg = new BackgroundRender();
+	  rand = new Random();
+	  double size = PI * 10;
+	  for(int i = 0; i < size; i++){
+	    bg.generate((sin(i*PI/size)*255).toInt(), (sin(i*PI/size)*100).toInt(), (sin(i*PI/size)*155).toInt()+100);
+	  }
+		
   	players = new List<Player>();
   	for (int i = 0; i < playerMap.length; i++) {
   		var player = new Player.origin(i, playerMap[i]);
+  		player.image = d;
   		players.add(player);
   		physicsSystem.addEntity(player);
   		renderSystem.addEntity(player);
@@ -39,7 +51,8 @@ class Game extends GameScreen {
   }
   
   void run() {
-  		ctx.clearRect(0, 0, 500, 500);
+  		ctx.clearRect(0, 0, canv.width, canv.height);
+  	  bg.render(ctx);
 			controlSystem.update(netsock);
 			physicsSystem.tick();
 			renderSystem.render();
@@ -53,8 +66,8 @@ class Game extends GameScreen {
   }
 
   void handleKeysdown(Map m) {
-		playerId = m['playerid'];
-		player = players[playerId];
+		var playerId = m['playerid'];
+		var player = players[playerId];
 		for (var key in m['keys']) {
 			if (key == 'W') {
 	      player.velocity.y -= VELOCITY_DELTA;

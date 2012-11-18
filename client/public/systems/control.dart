@@ -29,7 +29,7 @@ class Control extends System {
     });
   }
   
-  void update(NetSocket netsock) {
+  void update(NetworkSocket netsock) {
     for (var entity in entities) {
       var keysDown = new List<String>();
 

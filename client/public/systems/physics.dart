@@ -4,11 +4,11 @@ class Physics extends System{
     static const GROUND = 600;
     
     void tick(){
-      this.entities.forEach((var E){
-        if(E is Player){
+      this.entities.forEach((var p){
+        if(p is Player){
            double delta = p.velocity.y;
            double deltaX = p.velocity.x;
-            if(p.position.y + delta < GROUND && p.position.y + delta > 0){
+            if(p.position.y + delta < GROUND && p.position.y + delta > -10){
               p.position.y += p.velocity.y;
               p.velocity.y += 1;
             }
