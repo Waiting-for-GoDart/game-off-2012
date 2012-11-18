@@ -9,6 +9,8 @@ import (
 	"strconv"
 )
 
+const PlayerLimit = 20
+
 type Client struct {
 	Socket *websocket.Conn
 	Id     int
@@ -25,8 +27,36 @@ type Game struct {
 	Out     chan *Packet
 }
 
-func (g *Game) AddPlayer(player *Player) {
+func (g *Game) AddPlayer(player *Player) (success bool) {
+	totalPlayers := len(g.Players)
+	if totalPlayers >= PlayerLimit || gameStarted {
+		// notify the player that server is full
+		packet := &Packet{
+			Player: player,
+			Data:   "FULL",
+		}
+		websocket.Message.Send(player.Socket, packet.Data)
+		return false
+	}
+
 	g.Players = append(g.Players, player)
+
+	if totalPlayers == 1 {
+		// notify the player they are host
+		packet := &Packet{
+			Player: player,
+			Data:   "HOST",
+		}
+		websocket.Message.Send(player.Socket, packet.Data)
+	} else {
+		// notify the player they are NOT host
+		packet := &Packet{
+			Player: player,
+			Data:   "NOTHOST",
+		}
+		websocket.Message.Send(player.Socket, packet.Data)
+	}
+	return true
 }
 
 type Page struct {
@@ -35,16 +65,12 @@ type Page struct {
 
 type Packet struct {
 	Player *Player
-	JSON   JSONPacket
-}
-
-type JSONPacket struct {
-	Type    string
-	Message string
+	Data   string
 }
 
 var game *Game
 var lastClientId int
+var gameStarted bool
 
 func init() {
 	game = &Game{
@@ -54,14 +80,15 @@ func init() {
 	}
 
 	lastClientId = 0
+	gameStarted = false
 }
 
 func (g *Game) sendPackets() {
 	for {
 		select {
 		case packet := <-g.Out:
-			log.Printf("Broadcasting '%s' to: %s\n", packet.JSON, packet.Player.Name)
-			websocket.JSON.Send(packet.Player.Socket, packet.JSON)
+			log.Printf("Broadcasting '%s' to: %s\n", packet.Data, packet.Player.Name)
+			websocket.Message.Send(packet.Player.Socket, packet.Data)
 		}
 	}
 }
@@ -75,7 +102,7 @@ func (g *Game) Run() {
 			for _, player := range g.Players {
 				broadcastPacket := &Packet{
 					Player: player,
-					JSON:   packet.JSON,
+					Data:   packet.Data,
 				}
 				g.Out <- broadcastPacket
 			}
@@ -84,17 +111,23 @@ func (g *Game) Run() {
 }
 
 func handlePlayer(player *Player) {
-	game.AddPlayer(player)
+	success := game.AddPlayer(player)
+	if !success {
+		return
+	}
 
 	log.Printf("Created player %d\n", player.Name)
 
-	var data JSONPacket
+	var data string
 	for {
-		websocket.JSON.Receive(player.Socket, &data)
+		websocket.Message.Receive(player.Socket, &data)
 		log.Printf("Received: %s\n", data)
+		if match, _ := MatchString(".*RACKRACKCITYBITCH.*") {
+			gameStarted = true
+		}
 		packet := &Packet{
 			Player: player,
-			JSON:   data,
+			Data:   data,
 		}
 		game.In <- packet
 	}
