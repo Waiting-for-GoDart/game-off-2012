@@ -2,20 +2,23 @@ package main
 
 import (
 	"code.google.com/p/go.net/websocket"
-	"fmt"
 	"html/template"
+	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 )
 
+const PlayerLimit = 20
+
 type Client struct {
 	Socket *websocket.Conn
-	id     int
+	Id     int
 }
 
 type Player struct {
 	*Client
-	name string
+	Name string
 }
 
 type Game struct {
@@ -24,8 +27,26 @@ type Game struct {
 	Out     chan *Packet
 }
 
-func (g *Game) AddPlayer(player *Player) {
+func (g *Game) AddPlayer(player *Player) (success bool) {
+	totalPlayers := len(g.Players)
+	if totalPlayers >= PlayerLimit || gameStarted {
+		// notify the player that server is full
+		packet := &Packet{
+			Player: player,
+			Data:   "FULL",
+		}
+		websocket.Message.Send(player.Socket, packet.Data)
+		return false
+	}
+
 	g.Players = append(g.Players, player)
+	packet := &Packet{
+		Player: player,
+		Data:   strconv.Itoa(player.Client.Id),
+	}
+	websocket.Message.Send(player.Socket, packet.Data)
+
+	return true
 }
 
 type Page struct {
@@ -34,15 +55,13 @@ type Page struct {
 
 type Packet struct {
 	Player *Player
-	JSON   JSONPacket
-}
 
-type JSONPacket struct {
-	Message string
+	Data   string
 }
 
 var game *Game
 var lastClientId int
+
 
 func init() {
 	game = &Game{
@@ -52,14 +71,15 @@ func init() {
 	}
 
 	lastClientId = 0
+	gameStarted = false
 }
 
 func (g *Game) sendPackets() {
 	for {
 		select {
 		case packet := <-g.Out:
-			fmt.Printf("Sending %s\n", packet.JSON)
-			websocket.JSON.Send(packet.Player.Socket, packet.JSON)
+			log.Printf("Broadcasting '%s' to: %s\n", packet.Data, packet.Player.Name)
+			websocket.Message.Send(packet.Player.Socket, packet.Data)
 		}
 	}
 }
@@ -73,7 +93,7 @@ func (g *Game) Run() {
 			for _, player := range g.Players {
 				broadcastPacket := &Packet{
 					Player: player,
-					JSON:   packet.JSON,
+					Data:   packet.Data,
 				}
 				g.Out <- broadcastPacket
 			}
@@ -82,14 +102,24 @@ func (g *Game) Run() {
 }
 
 func handlePlayer(player *Player) {
-	game.AddPlayer(player)
+	success := game.AddPlayer(player)
+	if !success {
+		return
+	}
 
-	var data JSONPacket
+	log.Printf("Created player %d\n", player.Name)
+
+	var data string
 	for {
-		websocket.JSON.Receive(player.Socket, &data)
+		websocket.Message.Receive(player.Socket, &data)
+		log.Printf("Received: %s\n", data)
+		match, _ := regexp.MatchString(".*RACKRACKCITYBITCH.*", data)
+		if match {
+			gameStarted = true
+		}
 		packet := &Packet{
 			Player: player,
-			JSON:   data,
+			Data:   data,
 		}
 		game.In <- packet
 	}
@@ -98,13 +128,14 @@ func handlePlayer(player *Player) {
 func handleClient(ws *websocket.Conn) {
 	client := &Client{
 		Socket: ws,
-		id:     lastClientId,
+		Id:     lastClientId,
 	}
 	lastClientId++
+	log.Printf("Client connected: %d\n", client.Id)
 
 	player := &Player{
 		Client: client,
-		name:   "Player " + strconv.Itoa(lastClientId),
+		Name:   "Player " + strconv.Itoa(lastClientId),
 	}
 
 	handlePlayer(player)

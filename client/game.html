@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{.Title}}</title>
+    <link type="text/css" rel="stylesheet" href="public/game.css">
+  </head>
+  <body>
+    <div id="loginScreen">
+      <h1 id="loginGameTitle">Le.</h1>
+      <div id="loginConnectingMessage">
+        <h2>Connecting...</h2>
+      </div>
+      <div id="loginInfoForm" style="display:hidden;">
+        <p id="duplicateNameError" class="error" style="visibility:hidden;">This name is already taken. Try another.</p>
+        <p id="loginInfoFormName">
+          Flux Alias:
+          <input type="text" id="loginTextBoxName">
+        </p>
+        <a href="#" class="button" id="submitLoginName">LOGIN!</a>
+      </div>
+    </div>
+    
+    <div id="pregameScreen">
+      <div id="chatarea">
+        <textarea rows="10" cols="40" id="chatOut"></textarea>
+      </div>
+      <div id="inputarea"> 
+        <input type="text" length="40" id="inputbox">
+        <a href="#" id="submitPregameChat">Send</a>
+      </div>
+      <div id="hostStart" style="visibility:hidden;">
+      <a href="#" id="RACKCITYBITCH">Host: Start Game!</a>
+      </div>
+    </div>
+    
+    <div id="gameScreen">
+      <canvas id="game" width="1000px" height="1000px"></canvas>
+    </div>
+    
+    <div id="audioBox" style="visibility:hidden;">
+     <audio controls="" preload="auto" autobuffer id="jamz">
+      <source src="public/audio.webm">
+      <source src="public/audio.mp3">
+      </audio>
+    </div>
+    
+    <script type="application/dart" src="public/waiting_for_godart.dart"></script>
+    <script src="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
+  </body>
+</html>
