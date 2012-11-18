@@ -27,5 +27,6 @@ class WaitingForGodart {
 
 
 void main() {
+  print(document.domain);
   WaitingForGodart wfgd = new WaitingForGodart( "127.0.0.1:9001/game" );
 }
