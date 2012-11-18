@@ -11,7 +11,7 @@ class Control extends System {
     document.on.keyDown.add((KeyboardEvent e) {
       if (isKeyA(e.keyCode)) {
         keyA = KEY_DOWN;
-      } else if (iskeyD(e.keyCode)) {
+      } else if (isKeyD(e.keyCode)) {
         keyD = KEY_DOWN;
       } else if (isKeyW(e.keyCode)) {
         keyW = KEY_DOWN;
