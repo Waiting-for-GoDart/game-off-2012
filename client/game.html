@@ -4,19 +4,22 @@
     <meta charset="utf-8">
     <title>{{.Title}}</title>
     <link type="text/css" rel="stylesheet" href="public/game.css">
+    <link href='http://fonts.googleapis.com/css?family=Dawning+of+a+New+Day' rel='stylesheet' type='text/css'>
+    
   </head>
   <body>
     <div id="loginScreen">
-      <h1 id="loginGameTitle">Le.</h1>
+      <h1 id="loginGameTitle">Horse Annihalation</h1>
+      <img src="public/horse2horse.jpg" />
       <div id="loginConnectingMessage">
         <h2>Connecting...</h2>
       </div>
       <div id="loginInfoForm" style="display:hidden;">
-        <p id="duplicateNameError" class="error" style="visibility:hidden;">This name is already taken. Try another.</p>
-        <p id="loginInfoFormName">
+        <label id="duplicateNameError" class="error" style="visibility:hidden;">This name is already taken. Try another.</label>
+        <label id="loginInfoFormName">
           Flux Alias:
           <input type="text" id="loginTextBoxName">
-        </p>
+        </label>
         <a href="#" class="button" id="submitLoginName">LOGIN!</a>
       </div>
     </div>

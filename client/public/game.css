@@ -10,19 +10,45 @@ body {
   line-height: 1.2em;
 }
 
+
+a{
+    text-decoration:none;
+    border: 1px solid #8F8F8F;
+    padding: 5px;
+    background-color: #FCFCFC;
+    color: #666;    
+}
 p {
   color: #333;
+}
+label{
+  font-size: 3em;
+  font-weight: bold;
 }
 
 #container {
   border: 1px solid #ccc;
   background-color: #fff;
 }
-
+label{
+  font-size: 3em;
+  font-weight: bold;
+}
+img{
+  border: 3px solid black;
+  text: center;
+  margin:auto;
+  padding:auto;
+  float: left;
+}
 #summary {
   float: left;
 }
-
+#loginGameTitle{
+  font-family: 'Dawning of a New Day', cursive;
+  color: red;
+  font-size:10em;
+}
 #notes {
   float: right;
   width: 120px;
