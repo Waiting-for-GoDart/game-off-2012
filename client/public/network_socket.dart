@@ -5,5 +5,8 @@ class NetworkSocket {
   String _domain;
   static const String GAME_PATH = '/game';
   
-  NetworkSocket( this._domain, this._port ) { }
+  NetworkSocket( this._domain, this._port ) { 
+    
+    
+  }
 }
