@@ -2,11 +2,11 @@ package main
 
 import (
 	"code.google.com/p/go.net/websocket"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"strconv"
+    "regexp"
 )
 
 const PlayerLimit = 20
@@ -110,9 +110,10 @@ func handlePlayer(player *Player) {
 
 	var data string
 	for {
-		err := websocket.Message.Receive(player.Socket, &data)
+		websocket.Message.Receive(player.Socket, &data)
 		log.Printf("Received: %s\n", data)
-		if match, _ := MatchString(".*RACKRACKCITYBITCH.*") {
+		match, _ := regexp.MatchString(".*RACKRACKCITYBITCH.*", data) 
+        if match  {
 			gameStarted = true
 		}
 		packet := &Packet{

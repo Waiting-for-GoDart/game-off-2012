@@ -11,12 +11,13 @@
       <div id="loginConnectingMessage">
         <h2>Connecting...</h2>
       </div>
-      <div id="loginInfoForm">
+      <div id="loginInfoForm" style="display:hidden;">
+        <p id="duplicateNameError" class="error" style="visibility:none;">This name is already taken. Try another.</p>
         <p id="loginInfoFormName">
           Flux Alias:
           <input type="text" id="loginTextBoxName">
         </p>
-        <a href="#">PLAY!</a>
+        <a href="#" class="button" id="submitLoginName">LOGIN!</a>
       </div>
     </div>
     
@@ -34,19 +35,7 @@
       <canvas id="theMuthaFuckinCanvas"></canvas>
     </div>
     
-    <script type="application/dart" src="public/WaitingForGodart.dart"></script>
+    <script type="application/dart" src="public/waiting_for_godart.dart"></script>
     <script src="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
-  </body>
-</html>
-    </div>
-    
-    <div id="gameScreen">
-      <canvas id="theMuthaFuckinCanvas"></canvas>
-    </div>
-    
-    <script type="application/dart" src="public/WaitingForGodart.dart"></script>
-    <script src="http://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
-  </body>
-</html>
   </body>
 </html>
