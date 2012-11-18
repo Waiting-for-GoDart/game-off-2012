@@ -52,6 +52,8 @@ class Game extends GameScreen {
   void run() {
   		ctx.clearRect(0, 0, canv.width, canv.height);
   	  bg.render(ctx);
+  	  ctx.setFillColorRgb(0, 0, 0);
+  	  ctx.fillRect(0, Physics.GROUND, canv.width, canv.height);
 			controlSystem.update(netsock);
 			physicsSystem.tick();
 			renderSystem.render();

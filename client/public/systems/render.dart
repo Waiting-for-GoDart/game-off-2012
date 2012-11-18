@@ -32,6 +32,7 @@ class Render extends System {
         ctx.translate(E.position.x, E.position.y);
        // ctx.rotate(rotate);
         ctx.drawImage(E.image.image, -75,-100, 150, 200);
+        ctx.fillText(E.name, E.position.x-20, E.position.y, 4);
         ctx.restore();
       }
       else{
