@@ -111,6 +111,8 @@ func main() {
 		t.Execute(w, &Page{Title: "Game"})
 	})
 
+	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("client/public/"))))
+
 	http.Handle("/game", websocket.Handler(handleClient))
 
 	// run the main game server loop
