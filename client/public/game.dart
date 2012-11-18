@@ -24,7 +24,6 @@ class Game extends GameScreen {
 		renderSystem = new Render(ctx);
 		
 	  bg = new BackgroundRender();
-	  rand = new Random();
 	  double size = PI * 10;
 	  for(int i = 0; i < size; i++){
 	    bg.generate((sin(i*PI/size)*255).toInt(), (sin(i*PI/size)*100).toInt(), (sin(i*PI/size)*155).toInt()+100);
