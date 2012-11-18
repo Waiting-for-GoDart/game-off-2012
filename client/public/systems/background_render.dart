@@ -15,10 +15,13 @@ class BackgroundRender {
     ctx.save();
     ctx.translate(0 , 0);
     for(int i = 0; i < colorSequence.length; i++){
-      ctx.setFillColorRgb(colorSequence[i].r, colorSequence[i].g, colorSequence[i].b);
-      ctx.fillRect(i*40-40, 0, 40, 500);
+      for(int j = 0; j < colorSequence.length; j++){
+
+        ctx.setFillColorRgb(colorSequence[j].r, colorSequence[i].g, colorSequence[i].b);
+        ctx.fillRect(i*40-40, j*40-40, 40, 40);
+      }
     }
-    if(shiftAmount % 4== 0){
+    if(shiftAmount % 1== 0){
       var c = colorSequence.removeAt(0);
       colorSequence.addLast(c);
     }
