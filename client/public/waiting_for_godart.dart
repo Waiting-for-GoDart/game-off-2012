@@ -40,6 +40,7 @@ class WaitingForGodart {
   }
   
   void handleMessage( MessageEvent e ) {
+    print("in: ${e.data}");
     if( _firstMessage ) {
       if( e.data == 'FULL' ) { // GAME FULL OR GAME STARTED
         netsock.close();

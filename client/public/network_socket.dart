@@ -4,11 +4,13 @@ class NetworkSocket {
   String _port;
   String _domain;
   EventListener _handleMessage;
-  static const String GAME_PATH = '/game';
+  static const String GAME_PATH = 'game';
   
   // https://github.com/dart-lang/dart-html5-samples/blob/master/web/websockets/basics/websocket_sample.dart
   NetworkSocket( this._domain, this._port, this._handleMessage ) {
-    _websock = new WebSocket( 'ws://${_domain}:${_port}/${GAME_PATH}' );
+    String uri = 'ws://${_domain}:${_port}/${GAME_PATH}' ;
+    print(uri);
+    _websock = new WebSocket( uri );
     
     _websock.on.open.add((e) {
       print("WebSocket connected.");
