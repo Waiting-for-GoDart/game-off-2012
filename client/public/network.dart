@@ -1,6 +1,6 @@
-part of system;
+part of waiting_for_godart;
 
-class Network extends System {
+class Network {
   NetworkSocket netSock;
   
   Network(NetworkSocket ns) {
