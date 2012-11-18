@@ -16,7 +16,6 @@ class BackgroundRender {
     ctx.translate(0 , 0);
     for(int i = 0; i < colorSequence.length; i++){
       for(int j = 0; j < colorSequence.length; j++){
-
         ctx.setFillColorRgb(colorSequence[j].r, colorSequence[i].g, colorSequence[i].b);
         ctx.fillRect(i*40-40, j*40-40, 40, 40);
       }
