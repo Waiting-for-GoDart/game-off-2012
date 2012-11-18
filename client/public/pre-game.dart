@@ -3,7 +3,8 @@ class PreGame extends GameScreen {
   NetworkSocket netsock;
   int id;
   String name;
-  PreGame(this.netsock, this.name, this.id) {
+  var broadcastNames;
+  PreGame(this.netsock, this.name, this.id, this.broadcastNames) {
     hideAll();
     showPreGame();
   }
@@ -21,6 +22,9 @@ class PreGame extends GameScreen {
   }
   
   void startGame( e ) {
+    broadcastNames();
+    print("STARTING GAME...");
+
     netsock.sendRaw( 'RACKRACKCITYBITCH' );
   }
 }

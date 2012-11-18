@@ -28,7 +28,7 @@ class WaitingForGodart {
   int playerID;
   String name;
   RegExp _exp;
-  List playerNames;
+  Map playerNames;
   
   WaitingForGodart() {
     playerID = -1;
@@ -37,7 +37,7 @@ class WaitingForGodart {
     _isHost = false;
     curScreen = null;
     netsock = new NetworkSocket( document.domain, '9001', handleMessage );
-    playerNames = new List();
+    playerNames = new Map();
   }
   
   void handleMessage( MessageEvent e ) {
@@ -54,7 +54,7 @@ class WaitingForGodart {
       _firstMessage = false;
     } else if( e.data == 'RACKRACKCITYBITCH' ) { // START GAME
       if( playerID > -1 )
-        curScreen = new Game( netsock, name, playerID );
+        curScreen = new Game( netsock, name, playerID, playerNames );
       else {
         netsock.close();
         error37();
@@ -64,7 +64,9 @@ class WaitingForGodart {
       
       if( _isHost ) {
         if( msg.containsKey( 'loginREQ' ) ) {
-          if( ! playerNames.contains( msg['loginREQ'] ) ) {
+          if( ! playerNames.containsValue( msg['loginREQ'] ) ) {
+            int playerid = msg['playerid'];
+            playerNames[ playerid ] = msg['loginREQ'];
             netsock.send( { 'playerid': msg['playerid'], 
               'loginOK':true,
               'login':msg['loginREQ'] }
@@ -78,9 +80,16 @@ class WaitingForGodart {
         
       }
       
-      if( msg.containsKey( 'loginOK' ) && msg['playerid'] == playerID ) { // LOGIN OK
+      if( msg.containsKey('PLAYER_NAME_UPDATE') ) {
+        playerNames.clear();
+        msg.forEach( (k,v) {
+          if( k != 'PLAYER_NAME_UPDATE' ) {
+            playerNames[ int.parse(k) ] = v;
+          }
+        });
+      } else if( msg.containsKey( 'loginOK' ) && msg['playerid'] == playerID ) { // LOGIN OK
         name = msg['login'];
-        curScreen = new PreGame( netsock, name, playerID );
+        curScreen = new PreGame( netsock, name, playerID, broadcastNames );
       } else { // PASS TO SCREEN
         if( curScreen != null )
           curScreen.recvNetworkMessage( msg );
@@ -88,6 +97,15 @@ class WaitingForGodart {
           print("ignoring data.");
       }
     }
+  }
+  
+  void broadcastNames() {
+    Map tmp = new Map();
+    tmp['PLAYER_NAME_UPDATE'] = 'true';
+    playerNames.forEach( (k,v) {
+        tmp[ '$k' ] = v;
+    });
+    netsock.send(tmp);
   }
   
   void error37() {
