@@ -1,17 +1,28 @@
-//import 'dart:html';
+import 'dart:html';
 import 'dart:json';
-import 'dart:io';
 
 class WaitingForGodart {
   WebSocket _ws;
+  TextAreaElement _textarea;
+  InputElement _input;
   
   WaitingForGodart( String addr ) {
     _ws = new WebSocket( "ws://$addr" );
-    StringInputStream stdinput = new StringInputStream(stdin);
-    stdinput.onLine = () => _ws.send( JSON.stringify( { 'message':stdinput.readLine() }) );
-    _ws.onmessage = (e) => print( JSON.parse( e.data )['message'] );
+    _textarea = query("#output");
+    _input = query("#inputbox");
+    query("#submit").on.click.add( (e) {
+        var outmap = {'message': _input.value };
+        var jsonreq = JSON.stringify( outmap );
+        print( jsonreq );
+        _ws.send( jsonreq );
+      }
+    );
+    _ws.on.open.add( (e) => print("connected") );
+    _ws.on.close.add( (e) => print("closed") );
+    _ws.on.error.add( (e) => print("error") );
+    _ws.on.message.add( (e) => _textarea.text = e.data  );
   }
-  
+   
 }
 
 
