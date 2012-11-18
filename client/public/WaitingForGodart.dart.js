@@ -1804,61 +1804,6 @@ $$._JsonStringifier = {"": ["sb?", "seen"],
 }
 };
 
-$$.anon = {"": ["this_0"],
- "super": "Closure",
- call$1: function(e) {
-  var t1, jsonreq;
-  t1 = this.this_0;
-  jsonreq = $.JSON_stringify($.makeLiteralMap(['Message', t1.get$_input().get$value()]));
-  $.print(jsonreq);
-  t1.get$_ws().send$1(jsonreq);
-}
-};
-
-$$.anon0 = {"": [],
- "super": "Closure",
- call$1: function(e) {
-  return $.print('connected');
-}
-};
-
-$$.anon1 = {"": [],
- "super": "Closure",
- call$1: function(e) {
-  return $.print('closed');
-}
-};
-
-$$.anon2 = {"": [],
- "super": "Closure",
- call$1: function(e) {
-  return $.print('error');
-}
-};
-
-$$.anon3 = {"": ["this_1"],
- "super": "Closure",
- call$1: function(e) {
-  return this.this_1.get$_textarea().addText$1($.S($.index($.JSON_parse(e.get$data()), 'Message')) + '\n');
-}
-};
-
-$$.Maps__emitMap_anon = {"": ["visiting_3", "result_2", "box_0"],
- "super": "Closure",
- call$2: function(k, v) {
-  var t1, t2;
-  t1 = this.box_0;
-  if (t1.first_1 !== true)
-    $.add$1(this.result_2, ', ');
-  t1.first_1 = false;
-  t1 = this.result_2;
-  t2 = this.visiting_3;
-  $.Collections__emitObject(k, t1, t2);
-  $.add$1(t1, ': ');
-  $.Collections__emitObject(v, t1, t2);
-}
-};
-
 $$._convertDartToNative_PrepareForStructuredClone_findSlot = {"": ["values_3", "copies_2"],
  "super": "Closure",
  call$1: function(value) {
@@ -2157,6 +2102,61 @@ $$._convertDartToNative_PrepareForStructuredClone_walk_anon = {"": ["box_0", "wa
  "super": "Closure",
  call$2: function(key, value) {
   this.box_0.copy_1[key] = this.walk_9.call$1(value);
+}
+};
+
+$$.Maps__emitMap_anon = {"": ["box_0", "visiting_3", "result_2"],
+ "super": "Closure",
+ call$2: function(k, v) {
+  var t1, t2;
+  t1 = this.box_0;
+  if (t1.first_1 !== true)
+    $.add$1(this.result_2, ', ');
+  t1.first_1 = false;
+  t1 = this.result_2;
+  t2 = this.visiting_3;
+  $.Collections__emitObject(k, t1, t2);
+  $.add$1(t1, ': ');
+  $.Collections__emitObject(v, t1, t2);
+}
+};
+
+$$.anon = {"": ["this_0"],
+ "super": "Closure",
+ call$1: function(e) {
+  var t1, jsonreq;
+  t1 = this.this_0;
+  jsonreq = $.JSON_stringify($.makeLiteralMap(['Message', t1.get$_input().get$value()]));
+  $.print(jsonreq);
+  t1.get$_ws().send$1(jsonreq);
+}
+};
+
+$$.anon0 = {"": [],
+ "super": "Closure",
+ call$1: function(e) {
+  return $.print('connected');
+}
+};
+
+$$.anon1 = {"": [],
+ "super": "Closure",
+ call$1: function(e) {
+  return $.print('closed');
+}
+};
+
+$$.anon2 = {"": [],
+ "super": "Closure",
+ call$1: function(e) {
+  return $.print('error');
+}
+};
+
+$$.anon3 = {"": ["this_1"],
+ "super": "Closure",
+ call$1: function(e) {
+  return this.this_1.get$_textarea().addText$1($.S($.index($.JSON_parse(e.get$data()), 'Message')) + '\n');
 }
 };
 
@@ -2532,6 +2532,18 @@ $.add$slow = function(a, b) {
   return a.operator$add$1(b);
 };
 
+$.indexSet = function(a, index, value) {
+  var key;
+  if (a.constructor === Array && !a.immutable$list) {
+    key = index >>> 0;
+    if (key === index && key < a.length) {
+      a[key] = value;
+      return;
+    }
+  }
+  $.indexSet$slow(a, index, value);
+};
+
 $.sub$slow = function(a, b) {
   if ($.checkNumbers(a, b))
     return a - b;
@@ -2584,18 +2596,6 @@ $.lt$slow = function(a, b) {
   return a.operator$lt$1(b);
 };
 
-$.indexSet = function(a, index, value) {
-  var key;
-  if (a.constructor === Array && !a.immutable$list) {
-    key = index >>> 0;
-    if (key === index && key < a.length) {
-      a[key] = value;
-      return;
-    }
-  }
-  $.indexSet$slow(a, index, value);
-};
-
 $.shr = function(a, b) {
   if ($.checkNumbers(a, b)) {
     if (b < 0)
@@ -2616,6 +2616,10 @@ $.and = function(a, b) {
   if ($.checkNumbers(a, b))
     return (a & b) >>> 0;
   return a.operator$and$1(b);
+};
+
+$.FileReaderEvents$ = function(_ptr) {
+  return new $.FileReaderEvents(_ptr);
 };
 
 $.le$slow = function(a, b) {
@@ -2657,8 +2661,8 @@ $.indexSet$slow = function(a, index, value) {
   a.operator$indexSet$2(index, value);
 };
 
-$.checkGrowable = function(list, reason) {
-  if (!!(list.fixed$length))
+$.checkMutable = function(list, reason) {
+  if (!!(list.immutable$list))
     throw $.$$throw($.UnsupportedError$(reason));
 };
 
@@ -2707,8 +2711,16 @@ $.toStringWrapper = function() {
   return $.toString(this.dartException);
 };
 
-$.checkMutable = function(list, reason) {
-  if (!!(list.immutable$list))
+$.checkString = function(value) {
+  if (!(typeof value === 'string')) {
+    $.checkNull(value);
+    throw $.$$throw($.ArgumentError$(value));
+  }
+  return value;
+};
+
+$.checkGrowable = function(list, reason) {
+  if (!!(list.fixed$length))
     throw $.$$throw($.UnsupportedError$(reason));
 };
 
@@ -2750,14 +2762,6 @@ $.unwrapException = function(ex) {
   return ex;
 };
 
-$.checkString = function(value) {
-  if (!(typeof value === 'string')) {
-    $.checkNull(value);
-    throw $.$$throw($.ArgumentError$(value));
-  }
-  return value;
-};
-
 $.makeLiteralMap = function(keyValuePairs) {
   var iterator, result;
   iterator = $.iterator(keyValuePairs);
@@ -2778,6 +2782,10 @@ $.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
     throw $.$$throw($._ExceptionImplementation$('Unsupported number of arguments for wrapped closure'));
 };
 
+$.iae = function(argument) {
+  throw $.$$throw($.ArgumentError$(argument));
+};
+
 $.convertDartClosureToJS = function(closure, arity) {
   var function$;
   if (closure == null)
@@ -2790,14 +2798,6 @@ $.convertDartClosureToJS = function(closure, arity) {
   };
   closure.$identity = function$;
   return function$;
-};
-
-$.FileReaderEvents$ = function(_ptr) {
-  return new $.FileReaderEvents(_ptr);
-};
-
-$.iae = function(argument) {
-  throw $.$$throw($.ArgumentError$(argument));
 };
 
 $.leB = function(a, b) {
@@ -3059,6 +3059,25 @@ $.add$1 = function(receiver, value) {
   return receiver.add$1(value);
 };
 
+$.stringReplaceAllUnchecked = function(receiver, from, to) {
+  var result, length$, i;
+  if (from === '')
+    if (receiver === '')
+      return to;
+    else {
+      result = $.StringBuffer_StringBuffer('');
+      length$ = receiver.length;
+      $.add$1(result, to);
+      for (i = 0; i < length$; ++i) {
+        $.add$1(result, receiver[i]);
+        $.add$1(result, to);
+      }
+      return $.toString(result);
+    }
+  else
+    return $.stringReplaceJS(receiver, $.regExpMakeNative($.JSSyntaxRegExp$(from.replace($.regExpMakeNative($.CTC3, true), "\\$&"), false, false), true), to);
+};
+
 $.removeLast = function(receiver) {
   if ($.isJsArray(receiver)) {
     $.checkGrowable(receiver, 'removeLast');
@@ -3136,25 +3155,6 @@ $._dynamicMetadata0 = function() {
   return $dynamicMetadata;
 };
 
-$.stringReplaceAllUnchecked = function(receiver, from, to) {
-  var result, length$, i;
-  if (from === '')
-    if (receiver === '')
-      return to;
-    else {
-      result = $.StringBuffer_StringBuffer('');
-      length$ = receiver.length;
-      $.add$1(result, to);
-      for (i = 0; i < length$; ++i) {
-        $.add$1(result, receiver[i]);
-        $.add$1(result, to);
-      }
-      return $.toString(result);
-    }
-  else
-    return $.stringReplaceJS(receiver, $.regExpMakeNative($.JSSyntaxRegExp$(from.replace($.regExpMakeNative($.CTC3, true), "\\$&"), false, false), true), to);
-};
-
 $.clear = function(receiver) {
   if (!$.isJsArray(receiver))
     return receiver.clear$0();
@@ -3166,6 +3166,24 @@ $.forEach = function(receiver, f) {
     return receiver.forEach$1(f);
   else
     return $.Collections_forEach(receiver, f);
+};
+
+$.indexOf$2 = function(receiver, element, start) {
+  if ($.isJsArray(receiver))
+    return $.Arrays_indexOf(receiver, element, start, receiver.length);
+  else {
+    $.checkNull(element);
+    if (start < 0)
+      return -1;
+    return receiver.indexOf(element, start);
+  }
+  return receiver.indexOf$2(element, start);
+};
+
+$.get$last = function(receiver) {
+  if (!$.isJsArray(receiver))
+    return receiver.get$last();
+  return $.index(receiver, $.sub($.get$length(receiver), 1));
 };
 
 $.dynamicBind = function(obj, name$, methods, arguments$) {
@@ -3189,24 +3207,6 @@ $.dynamicBind = function(obj, name$, methods, arguments$) {
   if (!proto.hasOwnProperty(name$))
     $.defineProperty(proto, name$, method);
   return method.apply(obj, arguments$);
-};
-
-$.indexOf$2 = function(receiver, element, start) {
-  if ($.isJsArray(receiver))
-    return $.Arrays_indexOf(receiver, element, start, receiver.length);
-  else {
-    $.checkNull(element);
-    if (start < 0)
-      return -1;
-    return receiver.indexOf(element, start);
-  }
-  return receiver.indexOf$2(element, start);
-};
-
-$.get$last = function(receiver) {
-  if (!$.isJsArray(receiver))
-    return receiver.get$last();
-  return $.index(receiver, $.sub($.get$length(receiver), 1));
 };
 
 $.get$isNaN = function(receiver) {
@@ -3345,7 +3345,7 @@ $.RTCDataChannelEvents$ = function(_ptr) {
 };
 
 $.main = function() {
-  $.WaitingForGodart$('127.0.0.1:9001/game');
+  $.WaitingForGodart$($.S($.document().get$domain()) + ':9001/game');
 };
 
 $.window = function() {
@@ -3667,6 +3667,20 @@ $.Primitives_objectToString = function(object) {
   return 'Instance of \'' + $.S($.Primitives_objectTypeName(object)) + '\'';
 };
 
+$.Primitives_stringFromCharCodes = function(charCodes) {
+  var t1, t2;
+  for (t1 = $.iterator(charCodes); t1.get$hasNext() === true;) {
+    t2 = t1.next$0();
+    if (!(typeof t2 === 'number' && Math.floor(t2) === t2))
+      throw $.$$throw($.ArgumentError$(t2));
+  }
+  return String.fromCharCode.apply(null, charCodes);
+};
+
+$.IDBDatabaseEvents$ = function(_ptr) {
+  return new $.IDBDatabaseEvents(_ptr);
+};
+
 $.Primitives_newList = function(length$) {
   var result;
   if (length$ == null)
@@ -3676,20 +3690,6 @@ $.Primitives_newList = function(length$) {
   result = new Array(length$);
   result.fixed$length = true;
   return result;
-};
-
-$.IDBDatabaseEvents$ = function(_ptr) {
-  return new $.IDBDatabaseEvents(_ptr);
-};
-
-$.Primitives_stringFromCharCodes = function(charCodes) {
-  var t1, t2;
-  for (t1 = $.iterator(charCodes); t1.get$hasNext() === true;) {
-    t2 = t1.next$0();
-    if (!(typeof t2 === 'number' && Math.floor(t2) === t2))
-      throw $.$$throw($.ArgumentError$(t2));
-  }
-  return String.fromCharCode.apply(null, charCodes);
 };
 
 $.FormatException$ = function(message) {
@@ -3793,16 +3793,6 @@ $.Collections__emitCollection = function(c, result, visiting) {
   $.removeLast(visiting);
 };
 
-$.Collections__containsRef = function(c, ref) {
-  var t1, t2;
-  for (t1 = $.iterator(c); t1.get$hasNext() === true;) {
-    t2 = t1.next$0();
-    if (t2 == null ? ref == null : t2 === ref)
-      return true;
-  }
-  return false;
-};
-
 $.Collections__emitObject = function(o, result, visiting) {
   if (typeof o === 'object' && o !== null && (o.constructor === Array || o.is$Collection()))
     if ($.Collections__containsRef(visiting, o))
@@ -3816,6 +3806,16 @@ $.Collections__emitObject = function(o, result, visiting) {
       $.Maps__emitMap(o, result, visiting);
   else
     $.add$1(result, o);
+};
+
+$.Collections__containsRef = function(c, ref) {
+  var t1, t2;
+  for (t1 = $.iterator(c); t1.get$hasNext() === true;) {
+    t2 = t1.next$0();
+    if (t2 == null ? ref == null : t2 === ref)
+      return true;
+  }
+  return false;
 };
 
 $.StringBuffer_StringBuffer = function(content$) {
@@ -3847,7 +3847,7 @@ $.Maps__emitMap = function(m, result, visiting) {
   $.add$1(visiting, m);
   $.add$1(result, '{');
   t1.first_1 = true;
-  $.forEach(m, new $.Maps__emitMap_anon(visiting, result, t1));
+  $.forEach(m, new $.Maps__emitMap_anon(t1, visiting, result));
   $.add$1(result, '}');
   $.removeLast(visiting);
 };
@@ -4166,9 +4166,9 @@ $.$defineNativeClass = function(cls, desc) {
  is$Blob: function() { return false; },
  is$File: function() { return false; },
  is$Map: function() { return false; },
- is$Collection: function() { return false; },
- get$hashCode: function() { return $.hashCodeForNativeObject(this); },
  is$ImageData: function() { return false; },
+ get$hashCode: function() { return $.hashCodeForNativeObject(this); },
+ is$Collection: function() { return false; },
  is$List: function() { return false; }
 });
 
@@ -4613,7 +4613,7 @@ $.$defineNativeClass('DirectoryReaderSync', {"": []
 $.$defineNativeClass('HTMLDivElement', {"": []
 });
 
-$.$defineNativeClass('HTMLDocument', {"": [],
+$.$defineNativeClass('HTMLDocument', {"": ["domain?"],
  get$on: function() {
   return $.DocumentEvents$(this);
 },
