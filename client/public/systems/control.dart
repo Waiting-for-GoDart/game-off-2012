@@ -31,17 +31,16 @@ class Control extends System {
   
   void update() {
     for (var entity in entities) {
-        if (keyW == KEY_DOWN) {
-          entity.velocity.y -= 10;
-        }
-        if (keyA == KEY_DOWN) {
-          entity.velocity.x -= 10;
-        }
-        if (keyD == KEY_DOWN) {
-          entity.velocity.x += 10;
-        }
+      if (keyW == KEY_DOWN) {
+        entity.velocity.y -= 10;
       }
-    });
+      if (keyA == KEY_DOWN) {
+        entity.velocity.x -= 10;
+      }
+      if (keyD == KEY_DOWN) {
+        entity.velocity.x += 10;
+      }
+    }
   }
 
   bool isKeyA(int keyCode) {
