@@ -24,9 +24,16 @@ class Render extends System {
   }
   
   render(){
+    ctx.save();
     entities.forEach((var E){
-      ctx.drawImage(E.image.image, E.position.x, E.position.y, E.image.width, E.image.height);
+      if(E is Player){
+        ctx.fillRect(E.position.x, E.position.y, 10, 10);
+      }
+      else{
+        ctx.fillRect(10, 10, 100, 11);
+      }
     });
+    ctx.restore();
   }
   
 }

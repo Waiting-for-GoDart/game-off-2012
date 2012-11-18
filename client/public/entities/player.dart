@@ -6,7 +6,7 @@ class Player {
   Drawable image;
   
   Player(this.position, this.velocity, this.image);
-  Player.origin(this.image){
+  Player.origin(){
     position = new Position.origin();
     velocity = new Vector.zero();
     acceleration = new Vector.zero();

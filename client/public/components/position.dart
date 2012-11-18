@@ -8,6 +8,10 @@ class Position {
   }
   double get x => p.x;
   double get y => p.y;
+  
+  set x(double newX) => p.x = newX;
+  set y(double newY) => p.y = newY;
+  
   Point get pos => p;
   
 }
