@@ -11,7 +11,7 @@ class WaitingForGodart {
     _textarea = query("#output");
     _input = query("#inputbox");
     query("#submit").on.click.add( (e) {
-        var outmap = {'message': _input.value };
+        var outmap = {'Message': _input.value };
         var jsonreq = JSON.stringify( outmap );
         print( jsonreq );
         _ws.send( jsonreq );

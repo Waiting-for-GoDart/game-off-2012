@@ -1207,7 +1207,7 @@ $$.anon = {"": ["this_0"],
  call$1: function(e) {
   var t1, jsonreq;
   t1 = this.this_0;
-  jsonreq = $.JSON_stringify($.makeLiteralMap(['message', t1.get$_input().get$value()]));
+  jsonreq = $.JSON_stringify($.makeLiteralMap(['Message', t1.get$_input().get$value()]));
   $.print(jsonreq);
   t1.get$_ws().send$1(jsonreq);
 }
