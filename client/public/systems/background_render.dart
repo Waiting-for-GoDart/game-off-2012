@@ -18,7 +18,7 @@ class BackgroundRender {
     for(int i = 0; i < colorSequence.length; i++){
       scalar = freqValues[ i ];
       for(int j = 0; j < colorSequence.length; j++){
-        if( time < 50 ) {
+        if( time < 10 ) {
           ctx.setFillColorRgb(255, 255, 255);
           ctx.fillRect(i*40-40, j*40-40, 40, 40);
           
