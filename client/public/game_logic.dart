@@ -21,12 +21,11 @@ void main(){
   control = 0.0;
   bg = new BackgroundRender();
   rand = new Random();
-  double size = PI * 40;
-  for(int i = 1; i < size-1; i++){
-    bg.generate((sin(i*PI-1/size)*255).toInt(), 200, (sin(i*PI/size-1)*255).toInt());
+  double size = PI * 10;
+  for(int i = 0; i < size; i++){
+    bg.generate((sin(i*PI/size)*255).toInt(), (sin(i*PI/size)*100).toInt(), (sin(i*PI/size)*155).toInt()+100);
   }
-  bg.generate(150, 50, 150);
-  bg.generate(100, 100, 100);
+
   var canvas = document.query("#game");
   ctx = (canvas as CanvasElement).getContext("2d");
   physics = new Physics();
