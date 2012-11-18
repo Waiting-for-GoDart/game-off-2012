@@ -12,21 +12,50 @@ class WaitingForGodart {
   NetworkSocket netsock;
   GameScreen curScreen;
   Game game;
-  Login login;
-  PreGame pregame;
+  Login _login;
+  PreGame _pregame;
+  bool _isHost;
+  int playerID;
   
   WaitingForGodart() {
+    playerID = -1;
+    _isHost = false;
     curScreen = null;
     netsock = new NetworkSocket( document.domain, '9001', handleMessage );
-    login = new Login( netsock );
-    curScreen = login;
   }
   
   void handleMessage( MessageEvent e ) {
-    if( curScreen != null ) {
-      Map msg = JSON.parse( e.data );
+    
+    if( curScreen == null ) { //CONNECT
+      
+      
+      if( e.data == 'HOST' ) {
+        _isHost = true;
+        curScreen = _login = new Login( netsock, goPreGame, true );
+      } else if( e.data == 'NOTHOST' ) {
+        curScreen = _login = new Login( netsock, goPreGame, false );
+      } else if( e.data == 'FULL' ) {
+        error37();
+      }
+      
+    } else if( e.data == 'RACKRACKCITYBITCH' ) { // START GAME
+      if( playerID > -1 )
+        curScreen = _game = new Game( netsock, playerID );
+      else {
+        netsock.close();
+        error37()
+      }
+    } else if( e.data == '' )
       curScreen.recvNetworkMessage( msg );
     }
+  }
+  
+  void goPreGame( e ) {
+    
+  }
+  
+  void serverFull() {
+    print( "Server Full!" );
   }
    
 }
