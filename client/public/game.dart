@@ -45,38 +45,19 @@ class Game extends GameScreen {
 		               audioSource.connect( analyzer, 0, 0 );
 		               analyzer.connect( audioContext.destination, 0, 0);
 		               alpha = 0.0;
-		               
-		               
-
 		
 	  bg = new BackgroundRender();
 	  double size = PI * 10;
 	  for(int i = 0; i < size; i++){
 	    bg.generate((sin(i*PI/size)*255).toInt(), (sin(i*PI/size)*100).toInt(), (sin(i*PI/size)*155).toInt()+100);
 	  }
-<<<<<<< HEAD
-	           int freqcount = size.toInt() + 1;
-	           freqArray = new Uint8Array( freqcount );
+	  int freqcount = size.toInt() + 1;
+	  freqArray = new Uint8Array( freqcount );
 
-  	players = new List<Player>();
-  	for (int i = 0; i < playerMap.length; i++) {
-  		var player = new Player.origin(i, playerMap[i]);
-  		player.image = d;
-  		players.add(player);
-  		physicsSystem.addEntity(player);
-  		renderSystem.addEntity(player);
-  	}
-  	
-  	mainPlayer = players[this.id];
-  	controlSystem.addEntity(mainPlayer);
-=======
-		
 	  loadEntities(playerMap);
-  	
->>>>>>> 0f1463bd36e1d020dcaa20ed391df0330a6a1c32
-  	hideAll();
+  	 hideAll();
   	showGame();
-  	 audioElement.play();
+  	audioElement.play();
   	run();
   }
   

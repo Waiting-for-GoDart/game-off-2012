@@ -17,6 +17,8 @@ class Physics extends System{
             }
             if(p.position.x + deltaX < RIGHT && p.position.x +deltaX > 0){
               p.position.x += deltaX;
+            } else {
+              p.velocity.x = 0.0;
             }
           }
       });
