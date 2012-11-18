@@ -3,11 +3,17 @@
   <head>
     <meta charset="utf-8">
     <title>{{.Title}}</title>
+    <link type="text/css" rel="stylesheet" href="public/game.css">
   </head>
   <body>
-    <textarea rows="10" cols="40" id="output"></textarea>
-    <input type="text" length="40" id="inputbox">
-    <input type="button" id="submit">
+    <h1>Joel and Dan's Magical Chat Program</h1>
+    <div id="chatarea">
+      <textarea rows="10" cols="40" id="output"></textarea>
+    </div>
+    <div id="inputarea"> 
+      <input type="text" length="40" id="inputbox">
+      <input type="button" id="submit" value="SEND!">
+    </div>
     <script type="text/javascript" src="public/WaitingForGodart.dart.js"></script>
   </body>
 </html>
