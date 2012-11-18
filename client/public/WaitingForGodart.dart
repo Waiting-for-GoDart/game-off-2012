@@ -2,7 +2,7 @@ library WaitingForGodart;
 import 'dart:html';
 import 'dart:json';
 
-part 'network_socket.dart';
+part 'NetWorkSocket.dart';
 
 class WaitingForGodart {
  
