@@ -5,8 +5,8 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
-    "regexp"
 )
 
 const PlayerLimit = 20
@@ -112,8 +112,8 @@ func handlePlayer(player *Player) {
 	for {
 		websocket.Message.Receive(player.Socket, &data)
 		log.Printf("Received: %s\n", data)
-		match, _ := regexp.MatchString(".*RACKRACKCITYBITCH.*", data) 
-        if match  {
+		match, _ := regexp.MatchString(".*RACKRACKCITYBITCH.*", data)
+		if match {
 			gameStarted = true
 		}
 		packet := &Packet{
