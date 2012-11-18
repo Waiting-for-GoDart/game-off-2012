@@ -16,7 +16,7 @@ class Control extends System {
     
     
   }
-  void updateEntity(KeyboardEvent e, Entity entity) {
+  void updateEntity(KeyboardEvent e, var entity) {
 
   }
 }
