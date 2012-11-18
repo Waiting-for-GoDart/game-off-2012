@@ -34,6 +34,7 @@ type Page struct {
 type Packet struct {
 	Player *Player
 	Msg    string
+	Count  int
 }
 
 var game Game
@@ -73,7 +74,7 @@ func (g *Game) Run() {
 func handlePlayer(player *Player) {
 	var data string
 	for {
-		err := websocket.JSON.Receive(player.Socket, data)
+		err := websocket.JSON.Receive(player.Socket, &data)
 		if err != nil {
 			packet := &Packet{
 				Player: player,
