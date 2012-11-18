@@ -40,22 +40,12 @@ func (g *Game) AddPlayer(player *Player) (success bool) {
 	}
 
 	g.Players = append(g.Players, player)
-
-	if totalPlayers == 1 {
-		// notify the player they are host
-		packet := &Packet{
-			Player: player,
-			Data:   "HOST",
-		}
-		websocket.Message.Send(player.Socket, packet.Data)
-	} else {
-		// notify the player they are NOT host
-		packet := &Packet{
-			Player: player,
-			Data:   "NOTHOST",
-		}
-		websocket.Message.Send(player.Socket, packet.Data)
+	packet := &Packet{
+		Player: player,
+		Data:   string(player.Client.Id),
 	}
+	websocket.Message.Send(player.Socket, packet.Data)
+
 	return true
 }
 
@@ -120,7 +110,7 @@ func handlePlayer(player *Player) {
 
 	var data string
 	for {
-		websocket.Message.Receive(player.Socket, &data)
+		err := websocket.Message.Receive(player.Socket, &data)
 		log.Printf("Received: %s\n", data)
 		if match, _ := MatchString(".*RACKRACKCITYBITCH.*") {
 			gameStarted = true
