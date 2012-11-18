@@ -2,7 +2,7 @@ library system;
 
 import 'dart:html';
 import '../utilities.dart';
-
+import '../game.dart';
 part 'control.dart';
 part 'movement.dart';
 part 'network.dart';
