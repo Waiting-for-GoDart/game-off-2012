@@ -29,16 +29,25 @@ class Control extends System {
     });
   }
   
-  void update() {
+  void update(NetSocket netsock) {
     for (var entity in entities) {
+      var keysDown = new List<String>();
+
       if (keyW == KEY_DOWN) {
-        entity.velocity.y -= 10;
+        keysDown.add('W');
       }
       if (keyA == KEY_DOWN) {
-        entity.velocity.x -= 10;
+        keysDown.add('A');
       }
       if (keyD == KEY_DOWN) {
-        entity.velocity.x += 10;
+        keysDown.add('D');
+      }
+
+      if (keysDown.length > 0) {
+        netsock.send( {
+          'playerid': entity.id, 
+          'keys': keysDown
+        });
       }
     }
   }
