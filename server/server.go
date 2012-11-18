@@ -42,7 +42,7 @@ func (g *Game) AddPlayer(player *Player) (success bool) {
 	g.Players = append(g.Players, player)
 	packet := &Packet{
 		Player: player,
-		Data:   string(player.Client.Id),
+		Data:   strconv.Itoa(player.Client.Id),
 	}
 	websocket.Message.Send(player.Socket, packet.Data)
 
