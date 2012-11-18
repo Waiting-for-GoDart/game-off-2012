@@ -1,3 +1,4 @@
+library herp;
 import 'dart:html';
 
 class Utilities {

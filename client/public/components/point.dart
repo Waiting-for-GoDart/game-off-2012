@@ -1,4 +1,4 @@
-part of game;
+part of game_logic;
 
 class Point {
   double _x, _y;
