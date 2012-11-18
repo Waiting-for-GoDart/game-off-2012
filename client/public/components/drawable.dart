@@ -1,4 +1,4 @@
-part of game;
+part of game_logic;
 class Drawable {
   Function _callback;
   ImageElement _image;
