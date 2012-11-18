@@ -2,6 +2,7 @@ package main
 
 import (
 	"code.google.com/p/go.net/websocket"
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -32,9 +33,13 @@ type Page struct {
 }
 
 type Packet struct {
-	Player *Player
-	Msg    string
-	Count  int
+	Player     *Player
+	JSONPacket json
+}
+
+type JSONPacket struct {
+	Msg   string
+	Count int
 }
 
 var game Game
@@ -54,7 +59,7 @@ func (g *Game) sendPackets() {
 	for {
 		select {
 		case packet := <-g.Out:
-			websocket.JSON.Send(packet.Player.Socket, packet.Msg)
+			websocket.JSON.Send(packet.Player.Socket, packet.JSONPacket)
 		}
 	}
 }
@@ -72,13 +77,14 @@ func (g *Game) Run() {
 }
 
 func handlePlayer(player *Player) {
-	var data string
+	var data JSONPacket
 	for {
 		err := websocket.JSON.Receive(player.Socket, &data)
 		if err != nil {
+			fmt.Printf(data.Msg)
 			packet := &Packet{
-				Player: player,
-				Msg:    data,
+				Player:     player,
+				JSONPacket: data,
 			}
 			game.In <- packet
 		}
