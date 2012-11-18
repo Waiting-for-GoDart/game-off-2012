@@ -10,12 +10,12 @@ import (
 
 type Client struct {
 	Socket *websocket.Conn
-	id     int
+	Id     int
 }
 
 type Player struct {
 	*Client
-	name string
+	Name string
 }
 
 type Game struct {
@@ -58,7 +58,7 @@ func (g *Game) sendPackets() {
 	for {
 		select {
 		case packet := <-g.Out:
-			fmt.Printf("Sending %s\n", packet.JSON)
+			fmt.Printf("Broadcasting '%s' to: %s\n", packet.JSON, packet.Player.Name)
 			websocket.JSON.Send(packet.Player.Socket, packet.JSON)
 		}
 	}
@@ -84,9 +84,12 @@ func (g *Game) Run() {
 func handlePlayer(player *Player) {
 	game.AddPlayer(player)
 
+	fmt.Printf("Created player %d\n", player.Name)
+
 	var data JSONPacket
 	for {
 		websocket.JSON.Receive(player.Socket, &data)
+		fmt.Printf("Received: %s\n", data)
 		packet := &Packet{
 			Player: player,
 			JSON:   data,
@@ -98,13 +101,14 @@ func handlePlayer(player *Player) {
 func handleClient(ws *websocket.Conn) {
 	client := &Client{
 		Socket: ws,
-		id:     lastClientId,
+		Id:     lastClientId,
 	}
 	lastClientId++
+	fmt.Printf("Client connected: %d\n", client.Id)
 
 	player := &Player{
 		Client: client,
-		name:   "Player " + strconv.Itoa(lastClientId),
+		Name:   "Player " + strconv.Itoa(lastClientId),
 	}
 
 	handlePlayer(player)
