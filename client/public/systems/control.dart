@@ -30,10 +30,10 @@ class Control extends System {
   }
   
   void update(NetworkSocket netsock) {
-    for (var entity in entities) {
+    for (var entity in entities) {      
       var keysDown = new List<String>();
 
-      if (keyW == KEY_DOWN) {
+      if (keyW == KEY_DOWN && entity.state.state != State.AIRBORNE) {
         keysDown.add('W');
       }
       if (keyA == KEY_DOWN) {

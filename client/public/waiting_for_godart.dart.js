@@ -1176,6 +1176,7 @@ $$.Game = {"": ["canv", "ctx?", "netsock", "name", "id?", "mainPlayer", "players
   this.canv = canvas;
   d = $.Drawable$('public/horse.png', new $.anon());
   this.ctx = $.callTypeCast(canvas, 'is$CanvasElement').getContext$1('2d');
+  $.Physics_RIGHT = this.canv.get$width();
   this.physicsSystem = $.Physics$();
   this.controlSystem = $.Control$(canvas);
   this.renderSystem = $.Render$(this.ctx);
@@ -4439,8 +4440,8 @@ $.FileWriterEvents$ = function(_ptr) {
   return new $.FileWriterEvents(_ptr);
 };
 
-$._NodeListWrapper$ = function(list) {
-  return new $._NodeListWrapper(list);
+};
+
 };
 
 $.add = function(a, b) {
@@ -4822,8 +4823,8 @@ $.mod = function(a, b) {
     if (b < 0)
       return result - b;
     else
-      return result + b;
-  }
+$._MainManagerStub$ = function() {
+  return new $._MainManagerStub();
   return a.operator$mod$1(b);
 };
 
@@ -4835,8 +4836,8 @@ $.getTraceFromException = function(exception) {
   return $.StackTrace$(exception.stack);
 };
 
-$.ListIterator$ = function(list) {
-  return new $.ListIterator(0, list);
+    return 'DOMWindow';
+  return name$;
 };
 
 $.constructorNameFallback = function(object) {
@@ -4857,7 +4858,7 @@ $.constructorNameFallback = function(object) {
   return string.substring(8, string.length - 1);
 };
 
-$.typeNameInFirefox = function(obj) {
+$.typeNameInIE = function(obj) {
   var name$ = $.constructorNameFallback(obj);
   if (name$ === 'Window')
     return 'DOMWindow';
@@ -4910,10 +4911,10 @@ $.typeNameInOpera = function(obj) {
   return name$;
 };
 
-$.getTypeNameOf = function(obj) {
-  if ($._getTypeNameOf == null)
-    $._getTypeNameOf = $.getFunctionForTypeNameOf();
-  return $._getTypeNameOf.call$1(obj);
+  $.defineProperty(Object.prototype, name$, bind);
+  return methods;
+};
+
 };
 
 $.toStringForNativeObject = function(obj) {
@@ -4984,12 +4985,12 @@ $.dynamicBind = function(obj, name$, methods, arguments$) {
         if (!(method == null))
           break;
       }
-    }
-  if (method == null)
+};
+
     method = methods['Object'];
   proto = Object.getPrototypeOf(obj);
-  if (method == null)
-    method = function () {if (Object.getPrototypeOf(this) === proto) {throw new TypeError(name$ + " is not a function");} else {return Object.prototype[name$].apply(this, arguments);}};
+};
+
   if (!proto.hasOwnProperty(name$))
     $.defineProperty(proto, name$, method);
   return method.apply(obj, arguments$);
@@ -5233,8 +5234,8 @@ $.addLast = function(receiver, value) {
 
 $.contains$1 = function(receiver, other) {
   return $.contains$2(receiver, other, 0);
-  return receiver.contains$1(other);
 };
+
 
 $.contains$2 = function(receiver, other, startIndex) {
   $.checkNull(other);
@@ -5550,7 +5551,7 @@ $._MessageTraverserVisitedMap$ = function() {
   return new $._MessageTraverserVisitedMap();
 };
 
-$.DedicatedWorkerContextEvents$ = function(_ptr) {
+  return method.apply(obj, arguments$);
   return new $.DedicatedWorkerContextEvents(_ptr);
 };
 
@@ -5572,7 +5573,7 @@ $.ElementEvents$ = function(_ptr) {
   return new $.ElementEvents(_ptr);
 };
 
-$._JsSerializer$ = function() {
+
   var t1 = new $._JsSerializer(0, $._MessageTraverserVisitedMap$());
   t1._JsSerializer$0();
   return t1;
@@ -5706,10 +5707,7 @@ $.IDBRequestEvents$ = function(_ptr) {
   return new $.IDBRequestEvents(_ptr);
 };
 
-$.FutureUnhandledException$ = function(source, stackTrace) {
-  return new $.FutureUnhandledException(source, stackTrace);
-};
-
+>>>>>>> 0f1463bd36e1d020dcaa20ed391df0330a6a1c32
 $.TextTrackCueEvents$ = function(_ptr) {
   return new $.TextTrackCueEvents(_ptr);
 };

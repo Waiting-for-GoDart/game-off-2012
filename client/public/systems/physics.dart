@@ -2,7 +2,7 @@ part of system;
 
 class Physics extends System{
     static const GROUND = 600;
-    static const RIGHT = 1500;
+    static int RIGHT;
     void tick(){
       this.entities.forEach((var p){
         if(p is Player){

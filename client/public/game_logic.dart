@@ -6,6 +6,7 @@ part 'components/point.dart';
 part 'components/position.dart';
 part 'components/vector.dart';
 part 'components/bounding_box.dart';
-part 'entities/player.dart';
+part 'components/state.dart';
 part 'components/drawable.dart';
 part 'entities/obstacle.dart';
+part 'entities/player.dart';

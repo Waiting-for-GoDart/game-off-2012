@@ -1,7 +1,10 @@
 part of game_logic;
+
 class Obstacle {
   BoundingBox box;
-  Obstacle(this.box);
+  Drawable image;
+  
+  Obstacle(this.box, this.image);
   Obstacle.ground(CanvasElement canv){
     Point topLeft = new Point(0, Physics.GROUND);
     Point bottomRight = new Point(Physics.RIGHT, canv.height);

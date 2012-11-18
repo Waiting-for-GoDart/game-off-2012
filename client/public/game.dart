@@ -7,6 +7,7 @@ class Game extends GameScreen {
   NetworkSocket netsock;
   String name;
   int id;
+  Obstacle ground;
   Player mainPlayer;
   List<Player> players;
   Render renderSystem;
@@ -28,8 +29,8 @@ class Game extends GameScreen {
   Game(this.netsock, this.name, this.id, Map playerMap) {
 		var canvas = document.query("#game");
 		canv = canvas;
-		Drawable d = new Drawable("public/horse.png", (var i){});
 		ctx = (canvas as CanvasElement).getContext("2d");
+		Physics.RIGHT = canv.width;
  		physicsSystem = new Physics();
 		controlSystem = new Control(canvas);
 		renderSystem = new Render(ctx);
@@ -53,6 +54,7 @@ class Game extends GameScreen {
 	  for(int i = 0; i < size; i++){
 	    bg.generate((sin(i*PI/size)*255).toInt(), (sin(i*PI/size)*100).toInt(), (sin(i*PI/size)*155).toInt()+100);
 	  }
+<<<<<<< HEAD
 	           int freqcount = size.toInt() + 1;
 	           freqArray = new Uint8Array( freqcount );
 
@@ -67,10 +69,33 @@ class Game extends GameScreen {
   	
   	mainPlayer = players[this.id];
   	controlSystem.addEntity(mainPlayer);
+=======
+		
+	  loadEntities(playerMap);
+  	
+>>>>>>> 0f1463bd36e1d020dcaa20ed391df0330a6a1c32
   	hideAll();
   	showGame();
   	 audioElement.play();
   	run();
+  }
+  
+  void loadEntities(Map playerMap) {
+    players = new List<Player>();
+    for (int i = 0; i < playerMap.length; i++) {
+      var player = new Player.origin(i, playerMap[i]);
+      player.image = new Drawable("public/horse.png", (var i){});
+      players.add(player);
+      physicsSystem.addEntity(player);
+      renderSystem.addEntity(player);
+    }
+    mainPlayer = players[id];
+    controlSystem.addEntity(mainPlayer);
+    
+    ground = new Obstacle.ground(canv);
+    ground.image = new Drawable("public/clouds.png", (var i){});
+    physicsSystem.addEntity(ground);
+    //renderSystem.addEntity(ground);
   }
   
   void showGame( ) {
@@ -87,7 +112,8 @@ class Game extends GameScreen {
   	     ctx.setFillColorRgb(0, 0, 0);
   	     if( alpha < 1 ) alpha = alpha + 0.03;
       }
-  	  ctx.fillRect(0, Physics.GROUND, canv.width, canv.height);
+  	  ctx.drawImage(ground.image.image, 0, Physics.GROUND, canv.width, canv.height-Physics.GROUND);
+  	  //ctx.fillRect(0, Physics.GROUND, canv.width, canv.height);
 			controlSystem.update(netsock);
 			physicsSystem.tick();
 			renderSystem.render();

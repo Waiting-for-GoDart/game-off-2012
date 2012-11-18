@@ -5161,13 +5161,13 @@ $.getFunctionForTypeNameOf = function() {
   if (!(typeof(navigator) === 'object'))
     return $.typeNameInChrome;
   var userAgent = navigator.userAgent;
-  if (userAgent.indexOf('Chrome') !== -1 || userAgent.indexOf('DumpRenderTree') !== -1)
-    return $.typeNameInChrome;
+};
+
   else if (userAgent.indexOf('Firefox') !== -1)
     return $.typeNameInFirefox;
   else if (userAgent.indexOf('MSIE') !== -1)
-    return $.typeNameInIE;
-  else if (userAgent.indexOf('Opera') !== -1)
+};
+
     return $.typeNameInOpera;
   else if (userAgent.indexOf('AppleWebKit') !== -1)
     return $.typeNameInSafari;
@@ -5207,8 +5207,8 @@ $.toInt = function(receiver) {
   if (!(typeof receiver === 'number'))
     return receiver.toInt$0();
   if ($.get$isNaN(receiver) === true)
-    throw $.$$throw($.FormatException$('NaN'));
-  if ($.get$isInfinite(receiver) === true)
+};
+
     throw $.$$throw($.FormatException$('Infinity'));
   truncated = $.truncate(receiver);
   return truncated == -0.0 ? 0 : truncated;
@@ -5439,10 +5439,12 @@ $._Manager$ = function() {
   return t1;
 };
 
-$._Timer$repeating = function(milliSeconds, callback) {
-  var t1 = new $._Timer(false, null);
-  t1._Timer$repeating$2(milliSeconds, callback);
-  return t1;
+$._dynamicMetadata0 = function() {
+  if (typeof($dynamicMetadata) === 'undefined') {
+    var t1 = [];
+    $._dynamicMetadata(t1);
+  }
+  return $dynamicMetadata;
 };
 
 $.shl = function(a, b) {
@@ -5560,7 +5562,7 @@ $._IsolateEvent$ = function(isolate, fn, message) {
   return new $._IsolateEvent(isolate, fn, message);
 };
 
-$._JsCopier$ = function() {
+
   var t1 = new $._JsCopier($._MessageTraverserVisitedMap$());
   t1._JsCopier$0();
   return t1;
@@ -5952,8 +5954,8 @@ $.Collections__emitCollection = function(c, result, visiting) {
   $.add$1(result, isList ? '[' : '{');
   for (t1 = $.iterator(c), first = true; t1.get$hasNext() === true; first = false) {
     t2 = t1.next$0();
-    if (!first)
-      $.add$1(result, ', ');
+};
+
     $.Collections__emitObject(t2, result, visiting);
   }
   $.add$1(result, isList ? ']' : '}');
@@ -6251,8 +6253,8 @@ $.hideAll = function() {
 };
 
 $.main = function() {
-  $.hideAll();
-  $.get$LOGIN_SCREEN_ELEMENT().get$style().set$display('inherit');
+};
+
   $.query('#loginInfoForm').get$style().set$display('none');
   $.query('#loginConnectingMessage').get$style().set$visibility('inherit');
   $.WaitingForGodart$();
@@ -6504,15 +6506,15 @@ $.PreGame$ = function(netsock, name$, id, broadcastNames) {
   return t1;
 };
 
-$._Lists_getRange$bailout = function(state0, a, start, length$, accumulator) {
+
   var end, i;
   if ($.ltB(length$, 0))
-    throw $.$$throw($.ArgumentError$('length'));
-  if (start < 0)
+};
+
     throw $.$$throw($.RangeError$value(start));
   if (typeof length$ !== 'number')
-    throw $.iae(length$);
-  end = start + length$;
+};
+
   if ($.gtB(end, $.get$length(a)))
     throw $.$$throw($.RangeError$value(end));
   for (i = start; i < end; ++i)
