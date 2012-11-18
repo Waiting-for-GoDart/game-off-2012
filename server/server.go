@@ -18,21 +18,22 @@ type Player struct {
 }
 
 type Game struct {
-	players []*Player
-	in      chan string
-	out     chan string
+	Players []*Player
+	In      chan *Packet
+	Out     chan *Packet
 }
 
 func (g Game) AddPlayer(player *Player) {
-	g.players = append(game.players, player)
-}
-
-type GameUpdate struct {
-	Msg string
+	g.Players = append(game.Players, player)
 }
 
 type Page struct {
 	Title string
+}
+
+type Packet struct {
+	Player *Player
+	Msg    string
 }
 
 var game Game
@@ -40,31 +41,45 @@ var lastClientId int
 
 func init() {
 	game = Game{
-		players: make([]*Player, 0),
-		in:      make(chan string),
-		out:     make(chan string),
+		Players: make([]*Player, 0),
+		In:      make(chan *Packet),
+		Out:     make(chan *Packet),
 	}
 
 	lastClientId = 0
 }
 
-/*
-func run() {
+func (g *Game) sendPackets() {
 	for {
-		// broadcast
 		select {
-		case msg <- in:
+		case packet := <-g.Out:
+			websocket.JSON.Send(packet.Player.Socket, packet.Msg)
 		}
 	}
 }
-*/
+
+func (g *Game) Run() {
+	go g.sendPackets()
+
+	for {
+		select {
+		case packet := <-g.In:
+			// echo for now
+			g.Out <- packet
+		}
+	}
+}
 
 func handlePlayer(player *Player) {
 	var data string
 	for {
 		err := websocket.JSON.Receive(player.Socket, data)
 		if err != nil {
-			websocket.JSON.Send(player.Socket, data)
+			packet := &Packet{
+				Player: player,
+				Msg:    data,
+			}
+			game.In <- packet
 		}
 	}
 }
@@ -98,7 +113,7 @@ func main() {
 	http.Handle("/game", websocket.Handler(handleClient))
 
 	// run the main game server loop
-	//go run()
+	go game.Run()
 
 	// run the web server
 	err := http.ListenAndServe(":9001", nil)
