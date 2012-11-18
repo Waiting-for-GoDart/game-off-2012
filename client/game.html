@@ -21,7 +21,18 @@
       </div>
     </div>
     
-    <div id="pregameScreen">
+    <div id="gameScreen">
+      <canvas id="game" width="1000px" height="1000px"></canvas>
+    </div>
+    
+    <div id="audioBox" style="visibility:hidden;">
+     <audio controls="" preload="auto" autobuffer id="jamz">
+      <source src="public/audio.webm">
+      <source src="public/audio.mp3">
+      </audio>
+    </div>
+    
+      <div id="pregameScreen">
       <div id="chatarea">
         <textarea rows="10" cols="40" id="chatOut"></textarea>
       </div>
@@ -32,17 +43,6 @@
       <div id="hostStart" style="visibility:hidden;">
       <a href="#" id="RACKCITYBITCH">Host: Start Game!</a>
       </div>
-    </div>
-    
-    <div id="gameScreen">
-      <canvas id="game" width="1000px" height="1000px"></canvas>
-    </div>
-    
-    <div id="audioBox" style="visibility:hidden;">
-     <audio controls="" preload="auto" autobuffer id="jamz">
-      <source src="public/audio.webm">
-      <source src="public/audio.mp3">
-      </audio>
     </div>
     
     <script type="application/dart" src="public/waiting_for_godart.dart"></script>
