@@ -34,5 +34,9 @@ class NetworkSocket {
   void send( Map data ) {
     _websock.send( JSON.stringify( data ) );
   }
+  
+  void sendRaw( String s ) {
+    _websock.send( s );
+  }
  
 }

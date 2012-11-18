@@ -949,7 +949,7 @@ $$.WaitingForGodart = {"": ["netsock", "curScreen", "_isHost", "_firstMessage", 
       this._isHost = $.eq(this.playerID, 0);
       this.curScreen = $.Login$(this.netsock, this.playerID);
     }
-    this._firstMessage = true;
+    this._firstMessage = false;
   } else if ($.eqB(e.get$data(), 'RACKRACKCITYBITCH')) {
     t1 = $.gtB(this.playerID, -1);
     t2 = this.netsock;
@@ -986,8 +986,8 @@ $$.WaitingForGodart = {"": ["netsock", "curScreen", "_isHost", "_firstMessage", 
  WaitingForGodart$0: function() {
   this.playerID = -1;
   this.name = null;
+  this._firstMessage = true;
   this._isHost = false;
-  this._firstMessage = false;
   this.curScreen = null;
   this.netsock = $.NetworkSocket$($.document().get$domain(), '9001', this.get$handleMessage());
   this.playerNames = $._ListImpl_List(null);

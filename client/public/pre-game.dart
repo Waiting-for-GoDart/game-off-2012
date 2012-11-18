@@ -11,5 +11,16 @@ class PreGame extends GameScreen {
   void showPreGame() {
     query('#pregameScreen').style
     ..display = 'inherit';
+    
+    if( id == 0 ) {
+      query("#hostStart").style
+        ..visibility = 'inherit';
+      
+      query("#RACKCITYBITCH").on.click.add( startGame );
+    }
+  }
+  
+  void startGame( e ) {
+    netsock.sendRaw( 'RACKRACKCITYBITCH' );
   }
 }

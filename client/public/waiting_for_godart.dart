@@ -33,7 +33,8 @@ class WaitingForGodart {
   WaitingForGodart() {
     playerID = -1;
     name = null;
-    _firstMessage = _isHost = false;
+    _firstMessage = true;
+    _isHost = false;
     curScreen = null;
     netsock = new NetworkSocket( document.domain, '9001', handleMessage );
     playerNames = new List();
@@ -47,10 +48,10 @@ class WaitingForGodart {
         error37();
       } else {
         playerID = int.parse( e.data );
-        _isHost = playerID == 0;
+        _isHost = (playerID == 0);
         curScreen = new Login( netsock, playerID );
       }
-      _firstMessage = true;
+      _firstMessage = false;
     } else if( e.data == 'RACKRACKCITYBITCH' ) { // START GAME
       if( playerID > -1 )
         curScreen = new Game( netsock, name, playerID );
