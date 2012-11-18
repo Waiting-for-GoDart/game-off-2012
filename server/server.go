@@ -4,15 +4,16 @@ import (
 	"code.google.com/p/go.net/websocket"
 	"html/template"
 	"net/http"
+	"strconv"
 )
 
 type Client struct {
-	ws *websocket.Conn
-	id int
+	Socket *websocket.Conn
+	id     int
 }
 
 type Player struct {
-	Client
+	*Client
 	name string
 }
 
@@ -20,6 +21,10 @@ type Game struct {
 	players []*Player
 	in      chan string
 	out     chan string
+}
+
+func (g Game) AddPlayer(player *Player) {
+	g.players = append(game.players, player)
 }
 
 type GameUpdate struct {
@@ -52,37 +57,34 @@ func run() {
 		}
 	}
 }
+*/
 
 func handlePlayer(player *Player) {
+	var data string
 	for {
-		select {
-		case packet := <-in:
-		case packet := ws.JSON.Receive(ws, )
-		case 
+		err := websocket.JSON.Receive(player.Socket, data)
+		if err != nil {
+			websocket.JSON.Send(player.Socket, data)
 		}
 	}
-
-	var data JSONData
-	ws.JSON.Receive(ws, &data)
 }
 
 func handleClient(ws *websocket.Conn) {
 	client := &Client{
-		ws: ws,
-		id: lastClientId
+		Socket: ws,
+		id:     lastClientId,
 	}
 	lastClientId++
 
 	player := &Player{
-		name: "Player " + lastClientId,
-		client: client
+		Client: client,
+		name:   "Player " + strconv.Itoa(lastClientId),
 	}
 
-	game.players = append(game.players, player)
+	game.AddPlayer(player)
 
 	handlePlayer(player)
 }
-*/
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -92,11 +94,13 @@ func main() {
 		}
 		t.Execute(w, &Page{Title: "Game"})
 	})
-	/*
-		http.Handle("/game", websocket.Handler(handleClient))
 
-		go run()
-	*/
+	http.Handle("/game", websocket.Handler(handleClient))
+
+	// run the main game server loop
+	//go run()
+
+	// run the web server
 	err := http.ListenAndServe(":9001", nil)
 	if err != nil {
 		panic("ListenAndServe: " + err.Error())
