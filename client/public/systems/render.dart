@@ -4,6 +4,7 @@ class Render extends System {
   CanvasRenderingContext2D ctx;
   bool allLoaded;
   int count;
+  double rotate = 1.0;
   Render(this.ctx){
     entities = new Set();
     count = 0;
@@ -24,16 +25,19 @@ class Render extends System {
   }
   
   render(){
-    ctx.save();
+    //rotate += .01;
     entities.forEach((var E){
       if(E is Player){
-        ctx.fillRect(E.position.x, E.position.y, 10, 10);
+        ctx.save();
+        ctx.translate(E.position.x, E.position.y);
+       // ctx.rotate(rotate);
+        ctx.drawImage(E.image.image, -75,-100, 150, 200);
+        ctx.restore();
       }
       else{
         ctx.fillRect(10, 10, 100, 11);
       }
     });
-    ctx.restore();
   }
   
 }

@@ -3,6 +3,7 @@ part of system;
 class Control extends System {
   static final int KEY_UP = 0;
   static final int KEY_DOWN = 1;
+  static final int VELOCITY_DELTA = 3;
 
   CanvasElement canvas;
   int keyW, keyA, keyD;
@@ -32,13 +33,13 @@ class Control extends System {
   void update() {
     for (var entity in entities) {
       if (keyW == KEY_DOWN) {
-        entity.velocity.y -= 10;
+        entity.velocity.y -= VELOCITY_DELTA;
       }
       if (keyA == KEY_DOWN) {
-        entity.velocity.x -= 10;
+        entity.velocity.x -= VELOCITY_DELTA;
       }
       if (keyD == KEY_DOWN) {
-        entity.velocity.x += 10;
+        entity.velocity.x += VELOCITY_DELTA;
       }
     }
   }
