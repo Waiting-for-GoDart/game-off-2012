@@ -30,9 +30,11 @@ class Render extends System {
       if(E is Player){
         ctx.save();
         ctx.translate(E.position.x, E.position.y);
-       // ctx.rotate(rotate);
+        //ctx.rotate(rotate);
         ctx.drawImage(E.image.image, -75,-100, 150, 200);
-        ctx.fillText(E.name, E.position.x-20, E.position.y, 4);
+        ctx.fillStyle = 'white';
+        ctx.font = '32pt Calibri';
+        ctx.fillText(E.name, -30, -15);
         ctx.restore();
       }
       else{

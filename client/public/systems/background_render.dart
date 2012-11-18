@@ -11,14 +11,14 @@ class BackgroundRender {
     colorSequence.add(new Color(r,g,b));
   }
   
-  render( CanvasRenderingContext2D ctx, List freqValues, num time ){
+  render( CanvasRenderingContext2D ctx, List freqValues, num time, double alpha ){
     ctx.save();
     ctx.translate(0 , 0);
     var scalar = 0;
     for(int i = 0; i < colorSequence.length; i++){
       scalar = freqValues[ i ];
       for(int j = 0; j < colorSequence.length; j++){
-        if( time < 1 ) {
+        if( time < 50 ) {
           ctx.setFillColorRgb(255, 255, 255);
           ctx.fillRect(i*40-40, j*40-40, 40, 40);
           
@@ -26,8 +26,8 @@ class BackgroundRender {
           ctx.setFillColorRgb(
               (colorSequence[j].r * (scalar/255.0)).toInt(),
               (colorSequence[i].g * (scalar/255.0)).toInt(),
-              (colorSequence[i].b * (scalar/255.0)).toInt()
-              );
+              (colorSequence[i].b * (scalar/255.0)).toInt(),
+              alpha );
           ctx.fillRect(i*40-40, j*40-40, 40, 40);
         }       
       }
