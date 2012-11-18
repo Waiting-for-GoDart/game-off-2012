@@ -9,17 +9,17 @@ part 'network.dart';
 part 'render.dart';
 
 class System {
-  Set<Entity> entities;
+  Set entities;
   
   System() {
-    entities = new Set<Entity>();
+    entities = new Set();
   }
   
-  void addEntity(Entity entity) {
+  void addEntity(var entity) {
     entities.add(entity);
   }
   
-  void removeEntity(Entity entity) {
+  void removeEntity(var entity) {
     entities.remove(entity);
   }
 }

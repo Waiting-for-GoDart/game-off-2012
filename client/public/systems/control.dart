@@ -9,11 +9,11 @@ class Control extends System {
   
   void update() {
     canvas.on.click.add((KeyboardEvent e) {
-      entities.forEach(updateEntity);
+      entities.forEach((var element)=> updateEntity(e, element));
     });
   }
   
-  void updateEntity(KeyboardEvent e, Entity entity) {
+  void updateEntity(KeyboardEvent e, var entity) {
 
   }
 }

@@ -1,25 +1,32 @@
 part of system;
 
-class Render {
-  List drawables;
+class Render extends System {
   CanvasRenderingContext2D ctx;
+  bool allLoaded;
   int count;
   Render(this.ctx){
+    entities = new Set();
     count = 0;
-    drawables = new List();
-    drawables.add(drawable);
+    allLoaded = false;
   }
+  
+  void addResource(String resourceURL){
+    allLoaded = false;
+    var entity = new Drawable(resourceURL, countUp);
+    entities.add(entity);
+  }
+  
   void countUp(){
     count += 1;
-    if(count == drawables.length){
-      render();
+    if(count == entities.length){
+      allLoaded = true;
     }
   }
   
   render(){
-    for(int i = 0; i < drawables.length; i++){
-      ctx.drawImage(drawables[i].image, 0, 0, 100, 100);
-    }
+    entities.forEach((var E){
+      ctx.drawImage(E.image.image, E.position.x, E.position.y, E.image.width, E.image.height);
+    });
   }
   
 }
