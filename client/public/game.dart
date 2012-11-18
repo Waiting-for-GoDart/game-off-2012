@@ -1,6 +1,8 @@
 part of waiting_for_godart;
 
 class Game extends GameScreen {
+  static final int VELOCITY_DELTA = 3;
+
 	CanvasRenderingContext2D ctx;
   NetworkSocket netsock;
   String name;
@@ -55,11 +57,11 @@ class Game extends GameScreen {
 		player = players[playerId];
 		for (var key in m['keys']) {
 			if (key == 'W') {
-	      player.velocity.y -= 10;
+	      player.velocity.y -= VELOCITY_DELTA;
 	    } else if (key == 'A') {
-	      player.velocity.x -= 10;
+	      player.velocity.x -= VELOCITY_DELTA;
 	    } else if (key == 'D') {
-	      player.velocity.x += 10;
+	      player.velocity.x += VELOCITY_DELTA;
 	    }
 		}
   }

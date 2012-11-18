@@ -3,11 +3,14 @@ library system;
 import 'dart:html';
 import '../utilities.dart';
 import '../game_logic.dart';
+import 'dart:math';
 part 'control.dart';
 part 'movement.dart';
 part 'network.dart';
 part 'render.dart';
 part 'physics.dart';
+part 'background_render.dart';
+
 
 class System {
   Set entities;
