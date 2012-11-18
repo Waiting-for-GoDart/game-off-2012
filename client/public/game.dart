@@ -1,10 +1,10 @@
 library game;
 import 'dart:html';
 
-part 'Point.dart';
-part 'Position.dart';
-part 'Vector.dart';
-part 'Player.dart';
+part 'components/point.dart';
+part 'components/position.dart';
+part 'components/vector.dart';
+part 'entities/player.dart';
 
 
 void main() {
