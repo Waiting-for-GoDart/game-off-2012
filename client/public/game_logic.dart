@@ -8,3 +8,4 @@ part 'components/vector.dart';
 part 'components/bounding_box.dart';
 part 'entities/player.dart';
 part 'components/drawable.dart';
+part 'entities/obstacle.dart';
