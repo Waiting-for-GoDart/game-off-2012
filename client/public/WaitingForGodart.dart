@@ -20,7 +20,7 @@ class WaitingForGodart {
     _ws.on.open.add( (e) => print("connected") );
     _ws.on.close.add( (e) => print("closed") );
     _ws.on.error.add( (e) => print("error") );
-    _ws.on.message.add( (e) => _textarea.text = e.data  );
+    _ws.on.message.add( (e) => _textarea.addText( "${JSON.parse( e.data )['Message']}\n" )  );
   }
    
 }
