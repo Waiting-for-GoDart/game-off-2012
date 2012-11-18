@@ -4,6 +4,7 @@ import (
 	"code.google.com/p/go.net/websocket"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -38,6 +39,7 @@ type Packet struct {
 }
 
 type JSONPacket struct {
+	Type    string
 	Message string
 }
 
@@ -58,7 +60,7 @@ func (g *Game) sendPackets() {
 	for {
 		select {
 		case packet := <-g.Out:
-			fmt.Printf("Broadcasting '%s' to: %s\n", packet.JSON, packet.Player.Name)
+			log.Printf("Broadcasting '%s' to: %s\n", packet.JSON, packet.Player.Name)
 			websocket.JSON.Send(packet.Player.Socket, packet.JSON)
 		}
 	}
@@ -84,12 +86,12 @@ func (g *Game) Run() {
 func handlePlayer(player *Player) {
 	game.AddPlayer(player)
 
-	fmt.Printf("Created player %d\n", player.Name)
+	log.Printf("Created player %d\n", player.Name)
 
 	var data JSONPacket
 	for {
 		websocket.JSON.Receive(player.Socket, &data)
-		fmt.Printf("Received: %s\n", data)
+		log.Printf("Received: %s\n", data)
 		packet := &Packet{
 			Player: player,
 			JSON:   data,
@@ -104,7 +106,7 @@ func handleClient(ws *websocket.Conn) {
 		Id:     lastClientId,
 	}
 	lastClientId++
-	fmt.Printf("Client connected: %d\n", client.Id)
+	log.Printf("Client connected: %d\n", client.Id)
 
 	player := &Player{
 		Client: client,
