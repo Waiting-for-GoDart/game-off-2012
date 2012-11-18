@@ -1,6 +1,7 @@
 library waiting_for_godart;
 import 'dart:html';
 import 'dart:json';
+import 'game_logic.dart';
 
 part 'network_socket.dart';
 part 'game_screen.dart';
