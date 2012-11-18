@@ -55,12 +55,13 @@ type Page struct {
 
 type Packet struct {
 	Player *Player
+
 	Data   string
 }
 
 var game *Game
 var lastClientId int
-var gameStarted bool
+
 
 func init() {
 	game = &Game{
