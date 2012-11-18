@@ -3,6 +3,7 @@ part of waiting_for_godart;
 class Game extends GameScreen {
   static final int VELOCITY_DELTA = 3;
   CanvasElement canv;
+  TextAreaElement chatbox;
 	CanvasRenderingContext2D ctx;
   NetworkSocket netsock;
   String name;
@@ -29,6 +30,7 @@ class Game extends GameScreen {
   Game(this.netsock, this.name, this.id, Map playerMap) {
 		var canvas = document.query("#game");
 		canv = canvas;
+		chatbox = query('#chatOut');
 		ctx = (canvas as CanvasElement).getContext("2d");
 		Physics.RIGHT = canv.width;
  		physicsSystem = new Physics();
@@ -82,16 +84,20 @@ class Game extends GameScreen {
   void showGame( ) {
     GAME_SCREEN_ELEMENT.style
       ..display = 'inherit';
+    PREGAME_SCREEN_ELEMENT.style
+    ..display = 'inherit';
+    query('#hostStart').style
+    ..display = 'none';
   }
   
   void run() {
   		ctx.clearRect(0, 0, canv.width, canv.height);
-  		if( audioElement.currentTime > 55 ) {
+  		if( audioElement.currentTime > 10 ) {
   		   if( alpha > 1 ) alpha = 1.0;
   		   analyzer.getByteFrequencyData( freqArray );
   		   bg.render(ctx, freqArray.getRange(0, freqArray.length ), audioElement.currentTime, alpha );
   	     ctx.setFillColorRgb(0, 0, 0);
-  	     if( alpha < 1 ) alpha = alpha + 0.03;
+  	     if( alpha < 1 ) alpha = alpha + 0.0005;
       }
   	  ctx.drawImage(ground.image.image, 0, Physics.GROUND, canv.width, canv.height-Physics.GROUND);
   	  //ctx.fillRect(0, Physics.GROUND, canv.width, canv.height);
@@ -104,6 +110,9 @@ class Game extends GameScreen {
   void recvNetworkMessage( Map m ) {
   	if (m.containsKey('keys')) {
   		handleKeysdown(m);
+  	} else if ( m.containsKey( 'chat' ) ) {
+  	  String msg = "${m['chat']}: ${m['msg']}\n";
+      chatbox.addText( msg );
   	}
   }
 

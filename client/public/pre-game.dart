@@ -4,9 +4,15 @@ class PreGame extends GameScreen {
   int id;
   String name;
   var broadcastNames;
+  TextAreaElement chatbox;
   PreGame(this.netsock, this.name, this.id, this.broadcastNames) {
     hideAll();
     showPreGame();
+    chatbox = query( "#chatOut" );
+    query( "#submitPregameChat" ).on.click.add( (e) {
+      String msg = query("#inputbox").value;
+      netsock.send( { 'chat': name, 'msg': msg } );
+    });
   }
   
   void showPreGame() {
@@ -26,5 +32,12 @@ class PreGame extends GameScreen {
     print("STARTING GAME...");
 
     netsock.sendRaw( 'RACKRACKCITYBITCH' );
+  }
+  
+  void recvNetworkMessage( Map m ) {
+    if( m.containsKey( 'chat' ) ) {
+      String msg = "${m['chat']}: ${m['msg']}\n";
+      chatbox.addText( msg );
+    }
   }
 }
