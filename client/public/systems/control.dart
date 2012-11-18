@@ -3,19 +3,19 @@ part of system;
 class Control extends System {
   CanvasElement canvas;
   
-  Control() {
-    canvas = Utilities.canvas();
+  Control(this.canvas){
+    update();
   }
   
   void update() {
-    canvas.on.keyPress.add((KeyboardEvent e) {
+    document.on.keyPress.add((KeyboardEvent e) {
       for (var entity in entities) {
-        if (e.keyCode == KeyCode.W) {
-          entity.velocity.y = entity.velocity.y + 10
-        } else if (e.keyCode == KeyCode.A) {
-          entity.velocity.x = entity.velocity.x - 10
-        } else if (e.keyCode == KeyCode.D) {
-          entity.velocity.x = entity.velocity.x + 10
+        if (e.keyCode == KeyCode.W || e.keyCode == 119) {
+          entity.velocity.y -= 10;
+        } else if (e.keyCode == KeyCode.A || e.keyCode == 97) {
+          entity.velocity.x -= 10;
+        } else if (e.keyCode == KeyCode.D || e.keyCode == 100) {
+          entity.velocity.x += 10;
         }
       }
     });
