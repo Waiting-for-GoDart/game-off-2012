@@ -31,7 +31,13 @@ class Render extends System {
         ctx.save();
         ctx.translate(E.position.x, E.position.y);
        // ctx.rotate(rotate);
-        ctx.drawImage(E.image.image, -75,-100, 150, 200);
+        if (E.velocity.x < 0) {
+          ctx.scale(-1, 1);
+          ctx.drawImage(E.image.image, -75,-100, 150, 200);
+          ctx.scale(1, -1);
+        } else {
+          ctx.drawImage(E.image.image, -75,-100, 150, 200);
+        }
         ctx.fillText(E.name, E.position.x-20, E.position.y, 4);
         ctx.restore();
       }
