@@ -24,8 +24,8 @@ type Game struct {
 	Out     chan *Packet
 }
 
-func (g Game) AddPlayer(player *Player) {
-	g.Players = append(game.Players, player)
+func (g *Game) AddPlayer(player *Player) {
+	g.Players = append(g.Players, player)
 }
 
 type Page struct {
@@ -41,11 +41,11 @@ type JSONPacket struct {
 	Message string
 }
 
-var game Game
+var game *Game
 var lastClientId int
 
 func init() {
-	game = Game{
+	game = &Game{
 		Players: make([]*Player, 0),
 		In:      make(chan *Packet),
 		Out:     make(chan *Packet),
@@ -58,6 +58,7 @@ func (g *Game) sendPackets() {
 	for {
 		select {
 		case packet := <-g.Out:
+			fmt.Printf("Sending %s\n", packet.JSON)
 			websocket.JSON.Send(packet.Player.Socket, packet.JSON)
 		}
 	}
@@ -69,19 +70,23 @@ func (g *Game) Run() {
 	for {
 		select {
 		case packet := <-g.In:
-			fmt.Printf("Got the packet")
-			fmt.Printf(packet.JSON.Message)
-			// echo for now
-			g.Out <- packet
+			for _, player := range g.Players {
+				broadcastPacket := &Packet{
+					Player: player,
+					JSON:   packet.JSON,
+				}
+				g.Out <- broadcastPacket
+			}
 		}
 	}
 }
 
 func handlePlayer(player *Player) {
+	game.AddPlayer(player)
+
 	var data JSONPacket
 	for {
 		websocket.JSON.Receive(player.Socket, &data)
-		fmt.Printf(data.Message)
 		packet := &Packet{
 			Player: player,
 			JSON:   data,
@@ -101,8 +106,6 @@ func handleClient(ws *websocket.Conn) {
 		Client: client,
 		name:   "Player " + strconv.Itoa(lastClientId),
 	}
-
-	game.AddPlayer(player)
 
 	handlePlayer(player)
 }
