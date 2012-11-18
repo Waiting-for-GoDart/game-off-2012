@@ -33,13 +33,12 @@ type Page struct {
 }
 
 type Packet struct {
-	Player     *Player
-	JSONPacket json
+	Player *Player
+	JSON   JSONPacket
 }
 
 type JSONPacket struct {
-	Msg   string
-	Count int
+	Message string
 }
 
 var game Game
@@ -59,7 +58,7 @@ func (g *Game) sendPackets() {
 	for {
 		select {
 		case packet := <-g.Out:
-			websocket.JSON.Send(packet.Player.Socket, packet.JSONPacket)
+			websocket.JSON.Send(packet.Player.Socket, packet.JSON)
 		}
 	}
 }
@@ -70,6 +69,8 @@ func (g *Game) Run() {
 	for {
 		select {
 		case packet := <-g.In:
+			fmt.Printf("Got the packet")
+			fmt.Printf(packet.JSON.Message)
 			// echo for now
 			g.Out <- packet
 		}
@@ -79,15 +80,13 @@ func (g *Game) Run() {
 func handlePlayer(player *Player) {
 	var data JSONPacket
 	for {
-		err := websocket.JSON.Receive(player.Socket, &data)
-		if err != nil {
-			fmt.Printf(data.Msg)
-			packet := &Packet{
-				Player:     player,
-				JSONPacket: data,
-			}
-			game.In <- packet
+		websocket.JSON.Receive(player.Socket, &data)
+		fmt.Printf(data.Message)
+		packet := &Packet{
+			Player: player,
+			JSON:   data,
 		}
+		game.In <- packet
 	}
 }
 
