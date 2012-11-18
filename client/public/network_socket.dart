@@ -25,6 +25,10 @@ class NetworkSocket {
     _websock.on.message.add( _handleMessage );
   }
   
+  void close() {
+    _websock.close();
+  }
+  
   void send( Map data ) {
     _websock.send( JSON.stringify( data ) );
   }

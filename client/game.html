@@ -11,12 +11,13 @@
       <div id="loginConnectingMessage">
         <h2>Connecting...</h2>
       </div>
-      <div id="loginInfoForm">
+      <div id="loginInfoForm" style="display:hidden;">
+        <p id="duplicateNameError" class="error" style="visibility:none;">This name is already taken. Try another.</p>
         <p id="loginInfoFormName">
           Flux Alias:
           <input type="text" id="loginTextBoxName">
         </p>
-        <a href="#">PLAY!</a>
+        <a href="#" class="button" id="submitLoginName">LOGIN!</a>
       </div>
     </div>
     
