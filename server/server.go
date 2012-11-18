@@ -35,12 +35,7 @@ type Page struct {
 
 type Packet struct {
 	Player *Player
-	JSON   JSONPacket
-}
-
-type JSONPacket struct {
-	Type    string
-	Message string
+	Data   string
 }
 
 var game *Game
@@ -60,8 +55,8 @@ func (g *Game) sendPackets() {
 	for {
 		select {
 		case packet := <-g.Out:
-			log.Printf("Broadcasting '%s' to: %s\n", packet.JSON, packet.Player.Name)
-			websocket.JSON.Send(packet.Player.Socket, packet.JSON)
+			log.Printf("Broadcasting '%s' to: %s\n", packet.Data, packet.Player.Name)
+			websocket.Message.Send(packet.Player.Socket, packet.Data)
 		}
 	}
 }
@@ -75,7 +70,7 @@ func (g *Game) Run() {
 			for _, player := range g.Players {
 				broadcastPacket := &Packet{
 					Player: player,
-					JSON:   packet.JSON,
+					Data:   packet.Data,
 				}
 				g.Out <- broadcastPacket
 			}
@@ -88,13 +83,13 @@ func handlePlayer(player *Player) {
 
 	log.Printf("Created player %d\n", player.Name)
 
-	var data JSONPacket
+	var data string
 	for {
-		websocket.JSON.Receive(player.Socket, &data)
+		websocket.Message.Receive(player.Socket, &data)
 		log.Printf("Received: %s\n", data)
 		packet := &Packet{
 			Player: player,
-			JSON:   data,
+			Data:   data,
 		}
 		game.In <- packet
 	}

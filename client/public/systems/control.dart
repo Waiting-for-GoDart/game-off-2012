@@ -2,18 +2,21 @@ part of system;
 
 class Control extends System {
   CanvasElement canvas;
+  Movement movementSystem;
   
-  Control() {
+  Control(Movement movement) {
     canvas = Utilities.canvas();
+    movementSystem = movement;
   }
   
   void update() {
-    canvas.on.click.add((KeyboardEvent e) {
-      entities.forEach((var element)=> updateEntity(e, element));
+    canvas.on.keyDown.add((KeyboardEvent e) {
+      for (var entity in entities) {}
     });
+    
+    
   }
-  
-  void updateEntity(KeyboardEvent e, var entity) {
+  void updateEntity(KeyboardEvent e, Entity entity) {
 
   }
 }
