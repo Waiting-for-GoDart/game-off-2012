@@ -14,6 +14,7 @@ const PlayerLimit = 20
 type Client struct {
 	Socket *websocket.Conn
 	Id     int
+	Dead   bool
 }
 
 type Player struct {
@@ -21,32 +22,46 @@ type Player struct {
 	Name string
 }
 
-type Game struct {
-	Players []*Player
-	In      chan *Packet
-	Out     chan *Packet
+type GameServer struct {
+	players      []*Player
+	in           chan *Packet
+	out          chan *Packet
+	lastClientId int
+	started      bool
+	Closed       chan bool
 }
 
-func (g *Game) AddPlayer(player *Player) (success bool) {
-	totalPlayers := len(g.Players)
-	if totalPlayers >= PlayerLimit || gameStarted {
+func (g *GameServer) NewPlayer(client *Client) *Player {
+	player := &Player{
+		Client: client,
+		Name:   "Player " + strconv.Itoa(client.Id),
+	}
+
+	log.Printf("Created player %s\n", player.Name)
+
+	totalPlayers := len(g.players)
+	if totalPlayers >= PlayerLimit || g.started {
 		// notify the player that server is full
 		packet := &Packet{
 			Player: player,
 			Data:   "FULL",
 		}
-		websocket.Message.Send(player.Socket, packet.Data)
-		return false
+		websocket.Message.Send(client.Socket, packet.Data)
+		return nil
 	}
 
-	g.Players = append(g.Players, player)
+	g.players = append(g.players, player)
+	if len(g.players) >= PlayerLimit {
+		g.Closed <- true
+	}
+
 	packet := &Packet{
 		Player: player,
-		Data:   strconv.Itoa(player.Client.Id),
+		Data:   strconv.Itoa(client.Id),
 	}
-	websocket.Message.Send(player.Socket, packet.Data)
+	websocket.Message.Send(client.Socket, packet.Data)
 
-	return true
+	return player
 }
 
 type Page struct {
@@ -55,93 +70,147 @@ type Page struct {
 
 type Packet struct {
 	Player *Player
-
 	Data   string
 }
 
-var game *Game
-var lastClientId int
-
-
-func init() {
-	game = &Game{
-		Players: make([]*Player, 0),
-		In:      make(chan *Packet),
-		Out:     make(chan *Packet),
-	}
-
-	lastClientId = 0
-	gameStarted = false
-}
-
-func (g *Game) sendPackets() {
+func (g *GameServer) sendPackets() {
 	for {
 		select {
-		case packet := <-g.Out:
-			log.Printf("Broadcasting '%s' to: %s\n", packet.Data, packet.Player.Name)
-			websocket.Message.Send(packet.Player.Socket, packet.Data)
-		}
-	}
-}
-
-func (g *Game) Run() {
-	go g.sendPackets()
-
-	for {
-		select {
-		case packet := <-g.In:
-			for _, player := range g.Players {
-				broadcastPacket := &Packet{
-					Player: player,
-					Data:   packet.Data,
+		case packet := <-g.out:
+			client := packet.Player.Client
+			if !client.Dead {
+				log.Printf("Broadcasting '%s' to: %s\n", packet.Data, packet.Player.Name)
+				err := websocket.Message.Send(client.Socket, packet.Data)
+				if err != nil {
+					client.Dead = true
 				}
-				g.Out <- broadcastPacket
 			}
 		}
 	}
 }
 
-func handlePlayer(player *Player) {
-	success := game.AddPlayer(player)
-	if !success {
+func (g *GameServer) Run() {
+	go g.sendPackets()
+
+	for {
+		select {
+		case packet := <-g.in:
+			for _, player := range g.players {
+				broadcastPacket := &Packet{
+					Player: player,
+					Data:   packet.Data,
+				}
+				g.out <- broadcastPacket
+			}
+		}
+	}
+}
+
+func (g *GameServer) handlePlayer(client *Client) {
+	player := g.NewPlayer(client)
+	if player == nil {
 		return
 	}
 
-	log.Printf("Created player %d\n", player.Name)
-
 	var data string
 	for {
-		websocket.Message.Receive(player.Socket, &data)
+		err := websocket.Message.Receive(player.Socket, &data)
+		if err != nil {
+			client.Dead = true
+		}
 		log.Printf("Received: %s\n", data)
 		match, _ := regexp.MatchString(".*RACKRACKCITYBITCH.*", data)
 		if match {
-			gameStarted = true
+			g.started = true
+			g.Closed <- true
 		}
 		packet := &Packet{
 			Player: player,
 			Data:   data,
 		}
-		game.In <- packet
+		g.in <- packet
 	}
 }
 
-func handleClient(ws *websocket.Conn) {
+func (g *GameServer) HandleClient(ws *websocket.Conn) {
+	// TODO: begin mutex?
+	id := g.lastClientId
 	client := &Client{
 		Socket: ws,
-		Id:     lastClientId,
+		Id:     id,
 	}
-	lastClientId++
-	log.Printf("Client connected: %d\n", client.Id)
+	g.lastClientId++
+	// end mutex
 
-	player := &Player{
-		Client: client,
-		Name:   "Player " + strconv.Itoa(lastClientId),
+	log.Printf("Client connected: %d\n", id)
+
+	g.handlePlayer(client)
+}
+
+func handleClient(farm *ServerFarm) func(*websocket.Conn) {
+	return func(ws *websocket.Conn) {
+		server := farm.GetOpenServer()
+		server.HandleClient(ws)
 	}
+}
 
-	handlePlayer(player)
+func NewGameServer() *GameServer {
+	return &GameServer{
+		players:      make([]*Player, 0),
+		in:           make(chan *Packet),
+		out:          make(chan *Packet),
+		lastClientId: 0,
+		started:      false,
+		Closed:       make(chan bool),
+	}
+}
+
+type ServerFarm struct {
+	servers      []*GameServer
+	lastServerId int
+}
+
+func (sf *ServerFarm) StartNewServer() int {
+	server := NewGameServer()
+	// TODO: begin mutex?
+	sf.servers = append(sf.servers, server)
+	lastServerId := len(sf.servers) - 1
+	sf.lastServerId = lastServerId
+	// end mutex
+	// run the server
+	go server.Run()
+	return lastServerId
+}
+
+func (sf *ServerFarm) GetOpenServer() *GameServer {
+	// TODO: is this safe?
+	return sf.servers[sf.lastServerId]
+}
+
+func (sf *ServerFarm) Run() {
+	// startup a game server
+	sf.StartNewServer()
+
+	for {
+		select {
+		case <-sf.servers[sf.lastServerId].Closed:
+			// our last open server closed, so startup another
+			sf.StartNewServer()
+		}
+	}
+}
+
+func NewServerFarm() *ServerFarm {
+	return &ServerFarm{
+		servers:      make([]*GameServer, 0),
+		lastServerId: -1,
+	}
 }
 
 func main() {
+	farm := NewServerFarm()
+	go farm.Run()
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		t, err := template.ParseFiles("client/game.html")
 		if err != nil {
@@ -150,12 +219,10 @@ func main() {
 		t.Execute(w, &Page{Title: "Game"})
 	})
 
+	// serve all resources under the client's public folder
 	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir("client/public/"))))
 
-	http.Handle("/game", websocket.Handler(handleClient))
-
-	// run the main game server loop
-	go game.Run()
+	http.Handle("/game", websocket.Handler(handleClient(farm)))
 
 	// run the web server
 	err := http.ListenAndServe(":9001", nil)
