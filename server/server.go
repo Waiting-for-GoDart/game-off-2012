@@ -11,15 +11,34 @@ import (
 
 const PlayerLimit = 20
 
+type Page struct {
+	Title string
+}
+
 type Client struct {
 	Socket *websocket.Conn
 	Id     int
 	Dead   bool
 }
 
+func (c *Client) Disconnect() {
+	c.Socket.Close()
+	c.Dead = true
+}
+
 type Player struct {
 	*Client
 	Name string
+}
+
+type Packet struct {
+	Player *Player
+	Data   string
+}
+
+func (p *Packet) IsGameStart() bool {
+	match, _ := regexp.MatchString(".*RACKRACKCITYBITCH.*", p.Data)
+	return match
 }
 
 type GameServer struct {
@@ -29,6 +48,17 @@ type GameServer struct {
 	lastClientId int
 	started      bool
 	Closed       chan bool
+}
+
+func NewGameServer() *GameServer {
+	return &GameServer{
+		players:      make([]*Player, 0),
+		in:           make(chan *Packet),
+		out:          make(chan *Packet),
+		lastClientId: 0,
+		started:      false,
+		Closed:       make(chan bool),
+	}
 }
 
 func (g *GameServer) NewPlayer(client *Client) *Player {
@@ -47,6 +77,7 @@ func (g *GameServer) NewPlayer(client *Client) *Player {
 			Data:   "FULL",
 		}
 		websocket.Message.Send(client.Socket, packet.Data)
+		client.Socket.Close()
 		return nil
 	}
 
@@ -59,18 +90,12 @@ func (g *GameServer) NewPlayer(client *Client) *Player {
 		Player: player,
 		Data:   strconv.Itoa(client.Id),
 	}
-	websocket.Message.Send(client.Socket, packet.Data)
-
+	err := websocket.Message.Send(client.Socket, packet.Data)
+	if err != nil {
+		client.Disconnect()
+		return nil
+	}
 	return player
-}
-
-type Page struct {
-	Title string
-}
-
-type Packet struct {
-	Player *Player
-	Data   string
 }
 
 func (g *GameServer) sendPackets() {
@@ -116,18 +141,21 @@ func (g *GameServer) handlePlayer(client *Client) {
 	for {
 		err := websocket.Message.Receive(player.Socket, &data)
 		if err != nil {
-			client.Dead = true
+			client.Disconnect()
+			return
 		}
 		log.Printf("Received: %s\n", data)
-		match, _ := regexp.MatchString(".*RACKRACKCITYBITCH.*", data)
-		if match {
-			g.started = true
-			g.Closed <- true
-		}
+
 		packet := &Packet{
 			Player: player,
 			Data:   data,
 		}
+
+		if packet.IsGameStart() {
+			g.started = true
+			g.Closed <- true
+		}
+
 		g.in <- packet
 	}
 }
@@ -147,27 +175,16 @@ func (g *GameServer) HandleClient(ws *websocket.Conn) {
 	g.handlePlayer(client)
 }
 
-func handleClient(farm *ServerFarm) func(*websocket.Conn) {
-	return func(ws *websocket.Conn) {
-		server := farm.GetOpenServer()
-		server.HandleClient(ws)
-	}
-}
-
-func NewGameServer() *GameServer {
-	return &GameServer{
-		players:      make([]*Player, 0),
-		in:           make(chan *Packet),
-		out:          make(chan *Packet),
-		lastClientId: 0,
-		started:      false,
-		Closed:       make(chan bool),
-	}
-}
-
 type ServerFarm struct {
 	servers      []*GameServer
 	lastServerId int
+}
+
+func NewServerFarm() *ServerFarm {
+	return &ServerFarm{
+		servers:      make([]*GameServer, 0),
+		lastServerId: -1,
+	}
 }
 
 func (sf *ServerFarm) StartNewServer() int {
@@ -200,10 +217,10 @@ func (sf *ServerFarm) Run() {
 	}
 }
 
-func NewServerFarm() *ServerFarm {
-	return &ServerFarm{
-		servers:      make([]*GameServer, 0),
-		lastServerId: -1,
+func handleClient(farm *ServerFarm) func(*websocket.Conn) {
+	return func(ws *websocket.Conn) {
+		server := farm.GetOpenServer()
+		server.HandleClient(ws)
 	}
 }
 
